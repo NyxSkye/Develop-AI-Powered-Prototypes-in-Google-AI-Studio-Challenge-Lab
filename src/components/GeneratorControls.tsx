@@ -37,16 +37,16 @@ export const GeneratorControls: React.FC<GeneratorControlsProps> = ({
           disabled={isRolling}
           id="prominent-generate-button"
           aria-label="Generate Random Fantasy Character"
-          className="alchemist-brass-btn relative w-full flex items-center justify-center gap-3.5 px-8 py-5 text-amber-950 font-['MedievalSharp'] font-bold text-xl sm:text-2xl tracking-wider rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+          className="alchemist-brass-btn relative w-full flex items-center justify-center gap-3.5 px-8 py-5 text-amber-100 font-['MedievalSharp'] font-bold text-xl sm:text-2xl tracking-wider rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         >
           {/* Alchemical decorative symbols */}
-          <span className="text-amber-900/70 text-lg select-none">🜂</span>
-          <Dices className={`w-7 h-7 text-amber-950 transition-transform duration-300 ${isRolling ? 'rotate-180 scale-110' : 'group-hover:rotate-12'}`} />
-          <span className="whitespace-nowrap tracking-wide drop-shadow-sm">
+          <span className="text-amber-300/80 text-lg select-none">🜂</span>
+          <Dices className={`w-7 h-7 text-amber-200 transition-transform duration-300 ${isRolling ? 'rotate-180 scale-110' : 'group-hover:rotate-12'}`} />
+          <span className="whitespace-nowrap tracking-wide text-amber-50 drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)] font-bold">
             Transmute Fantasy Character
           </span>
-          <Sparkles className="w-6 h-6 text-amber-950/80" />
-          <span className="text-amber-900/70 text-lg select-none">🜄</span>
+          <Sparkles className="w-6 h-6 text-amber-300" />
+          <span className="text-amber-300/80 text-lg select-none">🜄</span>
         </button>
       </div>
 
