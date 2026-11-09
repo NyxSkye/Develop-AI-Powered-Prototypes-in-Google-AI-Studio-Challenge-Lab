@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, VolumeX, Shield, Bookmark } from 'lucide-react';
+import { Volume2, VolumeX, FlaskConical, BookMarked, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
   soundEnabled: boolean;
@@ -17,55 +17,63 @@ export const Header: React.FC<HeaderProps> = ({
   onGenerateNew,
 }) => {
   return (
-    <header className="flex items-center justify-between gap-8 px-6 py-4 border-b border-stone-800 bg-stone-950/90 backdrop-blur-md sticky top-0 z-40">
-      {/* Zone 1: Brand wordmark */}
+    <header className="flex items-center justify-between gap-8 px-6 py-4 border-b border-amber-900/40 bg-stone-950/85 backdrop-blur-md sticky top-0 z-40 shadow-xl shadow-stone-950/80">
+      {/* Zone 1: Brand wordmark in stylized alchemist font */}
       <div className="flex items-center gap-3 shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-sm shadow-amber-950">
-          <Shield className="w-4 h-4" />
+        <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-600/50 flex items-center justify-center text-amber-400 shadow-inner shadow-amber-950">
+          <FlaskConical className="w-4 h-4 text-amber-300 animate-pulse" />
         </div>
-        <span className="font-serif text-lg font-bold tracking-wider text-stone-100 whitespace-nowrap">
-          ArcaneForge
-        </span>
+        <div className="flex flex-col">
+          <span className="font-['MedievalSharp'] text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100 whitespace-nowrap">
+            Alchemist's Crucible
+          </span>
+          <span className="text-[10px] font-mono tracking-widest text-amber-600/90 uppercase -mt-0.5">
+            Heroic Transmutation Forge
+          </span>
+        </div>
       </div>
 
-      {/* Zone 2: Clean single-line navigation & utilities */}
-      <nav className="hidden sm:flex items-center gap-6 text-xs text-stone-400">
-        <span className="text-stone-500">Tabletop RPG Generator</span>
-        <span aria-hidden="true">·</span>
-        <span className="text-stone-500">d20 Standard Ruleset</span>
-        <span aria-hidden="true">·</span>
-        <span className="text-stone-400">Press <kbd className="px-1.5 py-0.5 rounded bg-stone-800 text-stone-300 font-mono text-[10px] border border-stone-700">Space</kbd> to roll</span>
+      {/* Zone 2: Clean single-line navigation & alchemical notes */}
+      <nav className="hidden sm:flex items-center gap-6 text-xs text-amber-200/60 font-serif">
+        <span className="text-amber-500/80">Ars Transmutatoria</span>
+        <span aria-hidden="true" className="text-amber-700">·</span>
+        <span className="text-amber-500/70">d20 Prime Matrix</span>
+        <span aria-hidden="true" className="text-amber-700">·</span>
+        <span className="text-amber-400/90 font-mono text-[11px]">
+          Press <kbd className="px-1.5 py-0.5 rounded bg-stone-900 text-amber-300 border border-amber-800/80">Space</kbd> to brew
+        </span>
       </nav>
 
-      {/* Zone 3: Primary utility actions */}
+      {/* Zone 3: Primary utility actions styled in brass/leather */}
       <div className="flex items-center gap-3 shrink-0">
         <button
           onClick={onToggleSound}
-          title={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'}
+          title={soundEnabled ? 'Mute alchemical chimes' : 'Enable alchemical chimes'}
           aria-label={soundEnabled ? 'Mute audio' : 'Enable audio'}
-          className="p-2 rounded-lg text-stone-400 hover:text-stone-200 hover:bg-stone-900 border border-transparent hover:border-stone-800 transition-colors whitespace-nowrap shrink-0"
+          className="p-2 rounded-lg text-amber-500 hover:text-amber-200 hover:bg-stone-900/80 border border-amber-900/30 hover:border-amber-700/60 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           {soundEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4 text-stone-600" />}
         </button>
 
         <button
           onClick={onOpenRoster}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-stone-300 bg-stone-900 hover:bg-stone-850 border border-stone-800 rounded-lg hover:border-stone-700 transition-colors whitespace-nowrap shrink-0"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-serif font-medium text-amber-200 bg-stone-900/90 hover:bg-stone-850 border border-amber-800/60 hover:border-amber-600/80 rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0 cursor-pointer"
         >
-          <Bookmark className="w-3.5 h-3.5 text-amber-400" />
-          <span>Party Codex</span>
+          <BookMarked className="w-3.5 h-3.5 text-amber-400" />
+          <span>Grimoire Codex</span>
           {savedCount > 0 && (
-            <span className="text-[11px] font-mono tabular-nums text-amber-400/90 ml-0.5">
-              ({savedCount})
+            <span className="text-[11px] font-mono tabular-nums text-amber-300 ml-0.5 px-1.5 py-0.2 rounded bg-amber-950/90 border border-amber-800/60">
+              {savedCount}
             </span>
           )}
         </button>
 
         <button
           onClick={onGenerateNew}
-          className="px-3.5 py-1.5 text-xs font-semibold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-sm shadow-amber-950 whitespace-nowrap shrink-0"
+          className="alchemist-brass-btn px-4 py-1.5 text-xs font-serif font-bold tracking-wide text-amber-950 rounded-lg whitespace-nowrap shrink-0 cursor-pointer flex items-center gap-1.5"
         >
-          Roll Hero
+          <Sparkles className="w-3.5 h-3.5 text-amber-950" />
+          <span>Transmute Hero</span>
         </button>
       </div>
     </header>

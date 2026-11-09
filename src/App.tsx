@@ -140,7 +140,7 @@ export default function App() {
   const isCurrentHeroSaved = savedCharacters.some((c) => c.id === character.id);
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="min-h-screen workbench-bg text-amber-100/90 flex flex-col font-serif selection:bg-amber-600/30 selection:text-amber-200 relative">
       {/* Top Navigation */}
       <Header
         soundEnabled={soundEnabled}
@@ -175,16 +175,20 @@ export default function App() {
         </section>
       </main>
 
-      {/* Clean quiet footer */}
-      <footer className="w-full border-t border-stone-850 py-6 text-center text-xs text-stone-500 bg-stone-950">
+      {/* Ancient Alchemist Workbench Themed Footer */}
+      <footer className="w-full border-t border-amber-900/40 py-6 text-center text-xs text-amber-400/60 bg-stone-950/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-serif font-semibold text-stone-400">Fantasy Character Creator</span>
-            <span aria-hidden="true">·</span>
-            <span>Instant Tabletop Hero Forge</span>
+            <span className="font-['MedievalSharp'] font-bold text-amber-300 text-sm">
+              Ancient Alchemist's Workbench
+            </span>
+            <span aria-hidden="true" className="text-amber-700">·</span>
+            <span className="text-amber-500/70 font-mono text-[11px]">
+              🜚 Magnum Opus Heroica 🜚
+            </span>
           </div>
-          <div className="text-stone-600">
-            Click Generate or press Space to roll random heroes
+          <div className="text-amber-400/60 text-xs font-serif">
+            Click crucible or press Space to transmute random heroes
           </div>
         </div>
       </footer>
