@@ -12,6 +12,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=MedievalSharp&family=Uncial+Antiqua&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <script>
+      // Suppress Vite HMR WebSocket connection warnings in sandboxed iframe environment
+      window.addEventListener('error', function(event) {
+        if (
+          event.message &&
+          (event.message.includes('WebSocket') ||
+           event.message.includes('createWebSocketModuleRunnerTransport') ||
+           event.filename?.includes('@vite/client'))
+        ) {
+          event.stopImmediatePropagation();
+          event.preventDefault();
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function(event) {
+        if (
+          event.reason &&
+          (String(event.reason).includes('WebSocket') ||
+           String(event.reason?.stack || '').includes('@vite/client') ||
+           String(event.reason?.message || '').includes('WebSocket'))
+        ) {
+          event.stopImmediatePropagation();
+          event.preventDefault();
+        }
+      }, true);
+    </script>
   </head>
   <body class="bg-stone-950 text-amber-100/90 antialiased min-h-screen selection:bg-amber-600/30 selection:text-amber-200">
     <div id="root"></div>
