@@ -81,11 +81,11 @@ export const BackstoryGenerator: React.FC<BackstoryGeneratorProps> = ({
           disabled={isLoading}
           id="generate-backstory-btn"
           aria-label="Generate rich fantasy backstory using AI"
-          className="alchemist-brass-btn w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 text-amber-950 font-['MedievalSharp'] font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer disabled:opacity-60 shadow-lg shadow-amber-950/60 whitespace-nowrap"
+          className="alchemist-brass-btn w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 text-amber-50 font-['MedievalSharp'] font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer disabled:opacity-60 shadow-lg shadow-amber-950/60 whitespace-nowrap"
         >
-          <Feather className={`w-4 h-4 text-amber-950 ${isLoading ? 'animate-bounce' : ''}`} />
-          <span>Generate Backstory</span>
-          <Sparkles className="w-4 h-4 text-amber-950/80" />
+          <Feather className={`w-4 h-4 text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${isLoading ? 'animate-bounce' : ''}`} />
+          <span className="text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] font-bold tracking-wide">Generate Backstory</span>
+          <Sparkles className="w-4 h-4 text-amber-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
         </button>
 
         <span className="text-xs text-amber-400/70 font-serif italic text-center sm:text-right">

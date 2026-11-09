@@ -157,10 +157,10 @@ export const CharacterPortrait: React.FC<CharacterPortraitProps> = ({
           disabled={isGenerating || isRolling}
           id="portrait-generate-btn"
           aria-label="Generate cartoon or video game portrait matching current character"
-          className="alchemist-brass-btn flex items-center justify-center gap-2 py-2.5 px-4 text-amber-950 font-['MedievalSharp'] font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap"
+          className="alchemist-brass-btn flex items-center justify-center gap-2 py-2.5 px-4 text-amber-50 font-['MedievalSharp'] font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap"
         >
-          <Wand2 className={`w-3.5 h-3.5 text-amber-950 ${isGenerating ? 'animate-spin' : ''}`} />
-          <span className="tracking-wide">Generate</span>
+          <Wand2 className={`w-3.5 h-3.5 text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${isGenerating ? 'animate-spin' : ''}`} />
+          <span className="tracking-wide text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] font-bold">Generate</span>
         </button>
 
         <button

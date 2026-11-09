@@ -73,11 +73,11 @@ export const CourseHookGenerator: React.FC<CourseHookGeneratorProps> = ({
           disabled={isLoading}
           id="generate-course-hook-btn"
           aria-label="Generate course Hook based on character backstory"
-          className="alchemist-brass-btn w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 text-amber-950 font-['MedievalSharp'] font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer disabled:opacity-60 shadow-lg shadow-amber-950/60 whitespace-nowrap"
+          className="alchemist-brass-btn w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 text-amber-50 font-['MedievalSharp'] font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer disabled:opacity-60 shadow-lg shadow-amber-950/60 whitespace-nowrap"
         >
-          <Compass className={`w-4 h-4 text-amber-950 ${isLoading ? 'animate-spin' : ''}`} />
-          <span>Generate course Hook</span>
-          <Sparkles className="w-4 h-4 text-amber-950/80" />
+          <Compass className={`w-4 h-4 text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${isLoading ? 'animate-spin' : ''}`} />
+          <span className="text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] font-bold tracking-wide">Generate course Hook</span>
+          <Sparkles className="w-4 h-4 text-amber-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
         </button>
 
         <span className="text-xs text-amber-400/70 font-serif italic text-center sm:text-right">

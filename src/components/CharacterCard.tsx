@@ -135,19 +135,19 @@ ${character.backstory}
               onClick={onSaveToDeck}
               id="save-to-deck-btn"
               aria-label="Save character to My Deck"
-              className={`alchemist-brass-btn flex items-center justify-center gap-2 py-2.5 px-5 text-xs sm:text-sm font-['MedievalSharp'] font-bold rounded-xl transition-all cursor-pointer shadow-md ${
+              className={`alchemist-brass-btn flex items-center justify-center gap-2 py-2.5 px-5 text-xs sm:text-sm text-amber-50 font-['MedievalSharp'] font-bold rounded-xl transition-all cursor-pointer shadow-md ${
                 isInDeck ? 'opacity-90 ring-2 ring-amber-300' : ''
               }`}
             >
               {isInDeck ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-amber-950" />
-                  <span>Saved to Deck</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                  <span className="text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">Saved to Deck</span>
                 </>
               ) : (
                 <>
-                  <PlusCircle className="w-4 h-4 text-amber-950" />
-                  <span>Save to Deck</span>
+                  <PlusCircle className="w-4 h-4 text-amber-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                  <span className="text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">Save to Deck</span>
                 </>
               )}
             </button>
