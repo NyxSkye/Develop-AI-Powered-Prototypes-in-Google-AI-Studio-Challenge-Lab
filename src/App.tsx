@@ -129,6 +129,14 @@ export default function App() {
     }
   };
 
+  const handleUpdatePortrait = (url: string, styleName: string) => {
+    setCharacter((prev) => ({
+      ...prev,
+      customPortraitUrl: url,
+      portraitStyle: styleName,
+    }));
+  };
+
   const isCurrentHeroSaved = savedCharacters.some((c) => c.id === character.id);
 
   return (
@@ -154,13 +162,15 @@ export default function App() {
           />
         </section>
 
-        {/* The Random Character Display Card */}
+        {/* The Random Character Display Card with CharacterPortrait and Generate/Regenerate buttons */}
         <section aria-label="Active Character Sheet" className="w-full mt-4">
           <CharacterCard
             character={character}
             isSaved={isCurrentHeroSaved}
             onToggleSave={handleToggleSave}
             isRolling={isRolling}
+            soundEnabled={soundEnabled}
+            onUpdatePortrait={handleUpdatePortrait}
           />
         </section>
       </main>

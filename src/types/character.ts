@@ -61,6 +61,9 @@ export interface FantasyCharacter {
   originRealm: string;
   backstory: string;
   portraitUrl?: string;
+  customPortraitUrl?: string;
+  portraitStyle?: string;
+  portraitSeed?: number;
   themeColor: string;
   accentColor: string;
   timestamp: number;

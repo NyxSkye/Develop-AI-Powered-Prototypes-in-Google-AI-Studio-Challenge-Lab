@@ -7,12 +7,15 @@ import {
 } from 'lucide-react';
 import { FantasyCharacter, CharacterClassType } from '../types/character';
 import { getStatModifier } from '../utils/characterGenerator';
+import { CharacterPortrait } from './CharacterPortrait';
 
 interface CharacterCardProps {
   character: FantasyCharacter;
   isSaved: boolean;
   onToggleSave: () => void;
   isRolling: boolean;
+  soundEnabled: boolean;
+  onUpdatePortrait: (url: string, styleName: string) => void;
 }
 
 const CLASS_ICONS: Record<CharacterClassType, React.ElementType> = {
@@ -33,6 +36,8 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
   isSaved,
   onToggleSave,
   isRolling,
+  soundEnabled,
+  onUpdatePortrait,
 }) => {
   const [copied, setCopied] = useState(false);
   const ClassIcon = CLASS_ICONS[character.class] || Swords;
@@ -94,37 +99,16 @@ ${character.backstory}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
           {/* Portrait Column */}
           <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center">
-            <div className="relative w-full aspect-square max-w-[280px] rounded-xl overflow-hidden border border-stone-700/80 bg-stone-950 shadow-inner group">
-              {character.portraitUrl ? (
-                <img
-                  src={character.portraitUrl}
-                  alt={`${character.name} the ${character.class}`}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center p-6 text-stone-600 bg-stone-950">
-                  <ClassIcon className="w-16 h-16 text-stone-500 mb-2" />
-                  <span className="font-serif text-sm text-stone-400">{character.class}</span>
-                </div>
-              )}
-              {/* Subtle gradient scrim */}
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent pointer-events-none" />
+            {/* Dedicated Character Portrait Image Component with Generate & Regenerate Buttons */}
+            <CharacterPortrait
+              character={character}
+              onUpdatePortrait={onUpdatePortrait}
+              isRolling={isRolling}
+              soundEnabled={soundEnabled}
+            />
 
-              {/* Class Insignia Badge on Portrait */}
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-stone-200">
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-stone-950/80 backdrop-blur-sm border border-stone-800 text-amber-300 font-serif">
-                  <ClassIcon className="w-3.5 h-3.5" />
-                  <span>{character.class}</span>
-                </div>
-                <div className="px-2 py-0.5 rounded bg-stone-900/80 backdrop-blur-sm border border-stone-800 font-mono text-[11px] text-stone-400">
-                  Lvl {character.level}
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions underneath portrait */}
-            <div className="flex items-center gap-2 mt-4 w-full max-w-[280px]">
+            {/* Quick Actions underneath portrait buttons */}
+            <div className="flex items-center gap-2 mt-4 w-full max-w-[320px]">
               <button
                 onClick={onToggleSave}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium rounded-lg border transition-colors ${
