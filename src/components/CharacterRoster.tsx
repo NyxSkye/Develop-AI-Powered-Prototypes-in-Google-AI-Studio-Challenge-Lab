@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, Trash2, ExternalLink, Download, BookMarked, Shield } from 'lucide-react';
+import { X, Trash2, ExternalLink, Download, BookMarked, Shield, Crown, Gem, Sparkles } from 'lucide-react';
 import { FantasyCharacter } from '../types/character';
+import { RARITY_CONFIGS } from '../data/fantasyData';
 
 interface CharacterRosterProps {
   isOpen: boolean;
@@ -75,31 +76,47 @@ export const CharacterRoster: React.FC<CharacterRosterProps> = ({
               </p>
             </div>
           ) : (
-            savedCharacters.map((hero) => (
-              <div
-                key={hero.id}
-                className="group p-3.5 rounded-xl bg-stone-950/80 hover:bg-stone-900 border border-amber-900/40 hover:border-amber-500/60 transition-all flex items-center justify-between gap-3 shadow-md"
-              >
-                <div 
-                  onClick={() => {
-                    onSelectCharacter(hero);
-                    onClose();
-                  }}
-                  className="flex-1 min-w-0 cursor-pointer"
+            savedCharacters.map((hero) => {
+              const rarity = hero.rarity || 'Common';
+              const rarityConfig = RARITY_CONFIGS[rarity] || RARITY_CONFIGS.Common;
+              return (
+                <div
+                  key={hero.id}
+                  className={`group p-3.5 rounded-xl bg-stone-950/80 hover:bg-stone-900 border transition-all flex items-center justify-between gap-3 shadow-md ${rarityConfig.cardBorder}`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-['MedievalSharp'] font-bold text-amber-200 text-sm truncate group-hover:text-amber-300 transition-colors">
-                      {hero.fullName}
-                    </span>
+                  <div 
+                    onClick={() => {
+                      onSelectCharacter(hero);
+                      onClose();
+                    }}
+                    className="flex-1 min-w-0 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider border ${rarityConfig.badgeBg} ${rarityConfig.badgeBorder} ${rarityConfig.badgeText}`}>
+                        {rarity === 'Legendary' && <Crown className="w-2.5 h-2.5 text-amber-300" />}
+                        {rarity === 'Epic' && <Gem className="w-2.5 h-2.5 text-purple-300" />}
+                        {rarity === 'Rare' && <Sparkles className="w-2.5 h-2.5 text-sky-300" />}
+                        {rarity === 'Common' && <Shield className="w-2.5 h-2.5 text-stone-400" />}
+                        <span>{rarity}</span>
+                      </span>
+
+                      <span className="font-['MedievalSharp'] font-bold text-amber-200 text-sm truncate group-hover:text-amber-300 transition-colors">
+                        {hero.fullName}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-1.5 text-xs text-amber-300/70 font-serif">
+                      <span className="text-amber-300 font-medium">
+                        {hero.gender === 'Female' ? '♀ Female' : hero.gender === 'Male' ? '♂ Male' : '⚧ Non-binary'}
+                      </span>
+                      <span aria-hidden="true" className="text-amber-700">·</span>
+                      <span className="text-amber-400 font-semibold">{hero.class}</span>
+                      <span aria-hidden="true" className="text-amber-700">·</span>
+                      <span>{hero.race}</span>
+                      <span aria-hidden="true" className="text-amber-700">·</span>
+                      <span className="font-mono text-[11px] text-amber-500">Lvl {hero.level}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-amber-300/70 font-serif">
-                    <span className="text-amber-400 font-semibold">{hero.class}</span>
-                    <span aria-hidden="true" className="text-amber-700">·</span>
-                    <span>{hero.race}</span>
-                    <span aria-hidden="true" className="text-amber-700">·</span>
-                    <span className="font-mono text-[11px] text-amber-500">Lvl {hero.level}</span>
-                  </div>
-                </div>
 
                 <div className="flex items-center gap-1 shrink-0">
                   <button
@@ -121,9 +138,10 @@ export const CharacterRoster: React.FC<CharacterRosterProps> = ({
                   </button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            );
+          })
+        )}
+      </div>
 
         {/* Footer actions */}
         {savedCharacters.length > 0 && (

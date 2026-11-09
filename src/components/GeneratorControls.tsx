@@ -1,7 +1,7 @@
 import React from 'react';
-import { Dices, Sparkles, Flame, RotateCcw, Compass, User } from 'lucide-react';
-import { CharacterClassType, CharacterRace } from '../types/character';
-import { RACE_STAT_INFLUENCES } from '../data/fantasyData';
+import { Dices, Sparkles, Flame, RotateCcw, Compass, User, Crown, Gem, Shield, Heart } from 'lucide-react';
+import { CharacterClassType, CharacterRace, CharacterGender, CharacterRarity } from '../types/character';
+import { RACE_STAT_INFLUENCES, RARITY_CONFIGS } from '../data/fantasyData';
 
 interface GeneratorControlsProps {
   onGenerate: () => void;
@@ -9,6 +9,10 @@ interface GeneratorControlsProps {
   onSelectLockedClass: (cls: CharacterClassType | null) => void;
   lockedRace: CharacterRace | null;
   onSelectLockedRace: (race: CharacterRace | null) => void;
+  lockedGender: CharacterGender | null;
+  onSelectLockedGender: (gender: CharacterGender | null) => void;
+  lockedRarity: CharacterRarity | null;
+  onSelectLockedRarity: (rarity: CharacterRarity | null) => void;
   isRolling: boolean;
 }
 
@@ -35,15 +39,35 @@ const RACES_LIST: { name: CharacterRace; bonusLabel: string }[] = [
   { name: 'Gnome', bonusLabel: '+30 MP, +5 INT, +2 CHA' },
 ];
 
+const GENDERS_LIST: { label: string; value: CharacterGender | null; symbol: string }[] = [
+  { label: 'Any Gender', value: null, symbol: '✦' },
+  { label: 'Male', value: 'Male', symbol: '♂' },
+  { label: 'Female', value: 'Female', symbol: '♀' },
+  { label: 'Non-binary', value: 'Non-binary', symbol: '⚧' },
+];
+
+const RARITIES_LIST: { name: CharacterRarity | null; label: string; bonus: string; color: string }[] = [
+  { name: null, label: 'Any Rarity (Random)', bonus: 'Natural Arcana', color: 'text-amber-200' },
+  { name: 'Common', label: 'Common', bonus: 'Standard', color: 'text-stone-300' },
+  { name: 'Rare', label: 'Rare', bonus: '+15 HP/MP, +2 Stats', color: 'text-sky-300' },
+  { name: 'Epic', label: 'Epic', bonus: '+35 HP/MP, +4 Stats', color: 'text-purple-300' },
+  { name: 'Legendary', label: 'Legendary', bonus: '+60 HP/MP, +6 Stats', color: 'text-amber-300' },
+];
+
 export const GeneratorControls: React.FC<GeneratorControlsProps> = ({
   onGenerate,
   lockedClass,
   onSelectLockedClass,
   lockedRace,
   onSelectLockedRace,
+  lockedGender,
+  onSelectLockedGender,
+  lockedRarity,
+  onSelectLockedRarity,
   isRolling,
 }) => {
   const currentRaceInfluence = lockedRace ? RACE_STAT_INFLUENCES[lockedRace] : null;
+  const currentRarityConfig = lockedRarity ? RARITY_CONFIGS[lockedRarity] : null;
 
   return (
     <div className="flex flex-col items-center justify-center py-6 px-4">
@@ -80,41 +104,98 @@ export const GeneratorControls: React.FC<GeneratorControlsProps> = ({
         </span>
       </div>
 
-      {/* Control Filters Container: Race Dropdown & Class Selector */}
+      {/* Control Filters Container: Race, Gender, Rarity, and Class */}
       <div className="w-full max-w-3xl mt-5 space-y-3">
-        {/* Race Selection Dropdown that influences starting stats */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 p-2 rounded-xl bg-stone-950/85 border border-amber-900/50 shadow-lg">
-          <div className="flex items-center gap-2 px-2 text-xs font-serif font-bold text-amber-300">
-            <User className="w-4 h-4 text-amber-400" />
-            <label htmlFor="character-race-select" className="whitespace-nowrap">
-              Select Character Race:
+        {/* Row 1: Race & Gender Selectors */}
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          {/* Race Selection Dropdown */}
+          <div className="sm:col-span-7 flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-stone-950/85 border border-amber-900/50 shadow-lg">
+            <div className="flex items-center gap-2 px-2 text-xs font-serif font-bold text-amber-300 shrink-0">
+              <User className="w-4 h-4 text-amber-400" />
+              <label htmlFor="character-race-select" className="whitespace-nowrap">
+                Race:
+              </label>
+            </div>
+
+            <div className="relative flex-1 w-full">
+              <select
+                id="character-race-select"
+                value={lockedRace || ''}
+                onChange={(e) => onSelectLockedRace((e.target.value as CharacterRace) || null)}
+                className="w-full py-2 px-3 text-xs font-serif font-medium bg-stone-900 text-amber-100 rounded-lg border border-amber-700/60 focus:border-amber-400 focus:outline-none cursor-pointer shadow-inner"
+              >
+                <option value="">Any Race (Random)</option>
+                {RACES_LIST.map((r) => (
+                  <option key={r.name} value={r.name} className="bg-stone-950 text-amber-100">
+                    {r.name} — ({r.bonusLabel})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Gender Selector */}
+          <div className="sm:col-span-5 flex items-center justify-between gap-1 p-2 rounded-xl bg-stone-950/85 border border-amber-900/50 shadow-lg">
+            <div className="flex items-center gap-1.5 px-2 text-xs font-serif font-bold text-amber-300 shrink-0">
+              <span className="text-amber-400 text-sm">⚧</span>
+              <span className="whitespace-nowrap">Gender:</span>
+            </div>
+
+            <div className="flex items-center gap-1 flex-1 justify-end">
+              {GENDERS_LIST.map((g) => {
+                const isActive = lockedGender === g.value;
+                return (
+                  <button
+                    key={g.label}
+                    onClick={() => onSelectLockedGender(g.value)}
+                    title={g.label}
+                    className={`px-2 py-1 text-xs font-serif rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                      isActive
+                        ? 'bg-amber-500/25 text-amber-200 border border-amber-500/70 font-bold shadow-xs'
+                        : 'text-amber-300/60 hover:text-amber-100 hover:bg-stone-900/80 border border-transparent'
+                    }`}
+                  >
+                    <span className="mr-0.5">{g.symbol}</span>
+                    <span className="hidden sm:inline text-[11px]">{g.label.replace('Any Gender', 'Any')}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: Rarity Selection Bar */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-stone-950/85 border border-amber-900/50 shadow-lg">
+          <div className="flex items-center gap-2 px-2 text-xs font-serif font-bold text-amber-300 shrink-0">
+            <Crown className="w-4 h-4 text-amber-400" />
+            <label htmlFor="character-rarity-select" className="whitespace-nowrap">
+              Rarity Tier:
             </label>
           </div>
 
-          <div className="relative flex-1 w-full sm:w-auto">
+          <div className="relative flex-1 w-full">
             <select
-              id="character-race-select"
-              value={lockedRace || ''}
-              onChange={(e) => onSelectLockedRace((e.target.value as CharacterRace) || null)}
-              className="w-full py-2 px-3.5 text-xs font-serif font-medium bg-stone-900 text-amber-100 rounded-lg border border-amber-700/60 focus:border-amber-400 focus:outline-none cursor-pointer shadow-inner"
+              id="character-rarity-select"
+              value={lockedRarity || ''}
+              onChange={(e) => onSelectLockedRarity((e.target.value as CharacterRarity) || null)}
+              className="w-full py-2 px-3 text-xs font-serif font-medium bg-stone-900 text-amber-100 rounded-lg border border-amber-700/60 focus:border-amber-400 focus:outline-none cursor-pointer shadow-inner"
             >
-              <option value="">Any Race (Random - Unlocked)</option>
-              {RACES_LIST.map((r) => (
-                <option key={r.name} value={r.name} className="bg-stone-950 text-amber-100">
-                  {r.name} — ({r.bonusLabel})
+              {RARITIES_LIST.map((r) => (
+                <option key={r.label} value={r.name || ''} className="bg-stone-950 text-amber-100">
+                  {r.label} — ({r.bonus})
                 </option>
               ))}
             </select>
           </div>
 
-          {currentRaceInfluence && (
-            <div className="text-[11px] font-mono text-amber-300 bg-amber-950/80 px-2.5 py-1 rounded-md border border-amber-700/60 whitespace-nowrap">
-              HP: {currentRaceInfluence.healthMod >= 0 ? `+${currentRaceInfluence.healthMod}` : currentRaceInfluence.healthMod} · MP: {currentRaceInfluence.manaMod >= 0 ? `+${currentRaceInfluence.manaMod}` : currentRaceInfluence.manaMod} · STR: {currentRaceInfluence.strengthMod >= 0 ? `+${currentRaceInfluence.strengthMod}` : currentRaceInfluence.strengthMod}
+          {currentRarityConfig && (
+            <div className={`text-[11px] font-mono px-2.5 py-1 rounded-md border whitespace-nowrap ${currentRarityConfig.badgeBg} ${currentRarityConfig.badgeBorder} ${currentRarityConfig.badgeText}`}>
+              Tier Bonus: +{currentRarityConfig.healthBonus} HP · +{currentRarityConfig.statBonus} All Stats
             </div>
           )}
         </div>
 
-        {/* Class Filter segmented bar */}
+        {/* Row 3: Class Filter segmented bar */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 bg-stone-950/85 border border-amber-900/50 rounded-xl shadow-lg">
           <div className="flex items-center gap-1.5 px-3 py-1 text-xs text-amber-300/80 font-serif">
             <Compass className="w-3.5 h-3.5 text-amber-500" />

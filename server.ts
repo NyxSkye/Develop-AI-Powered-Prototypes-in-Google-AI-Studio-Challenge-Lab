@@ -46,6 +46,8 @@ app.post('/api/generate-backstory', async (req, res) => {
 Write an immersive, atmospheric, rich, paragraphs-long (3 to 4 detailed paragraphs) fantasy backstory and legend for this character:
 
 - Name: ${character.fullName}
+- Gender: ${character.gender || 'Adventurer'}
+- Rarity Tier: ${character.rarity || 'Common'} Tier
 - Class: ${character.class} (${character.subclass})
 - Race/Ancestry: ${character.race}
 - Alignment: ${character.alignment}
@@ -113,6 +115,8 @@ app.post('/api/generate-course-hook', async (req, res) => {
 Create an exciting, immersive mini-adventure quest hook ("Course Hook") specifically tailored to this character's backstory and traits:
 
 - Character Name: ${character.fullName}
+- Gender: ${character.gender || 'Adventurer'}
+- Rarity: ${character.rarity || 'Common'} Tier
 - Class & Subclass: ${character.class} (${character.subclass})
 - Race/Ancestry: ${character.race}
 - Alignment: ${character.alignment}

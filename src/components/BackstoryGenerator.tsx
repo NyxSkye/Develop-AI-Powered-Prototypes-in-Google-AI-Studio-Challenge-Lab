@@ -198,11 +198,16 @@ export const BackstoryGenerator: React.FC<BackstoryGeneratorProps> = ({
  * as a high-fidelity fallback in case of network constraint.
  */
 function generateRichProceduralBackstory(char: FantasyCharacter): string {
-  const p1 = `Long before the banners of war were raised across the continents, ${char.fullName} drew their first breath within ${char.originRealm}. Raised amidst tales of lost dynasties and primeval covenants, their natural affinity as a ${char.race} became evident when a celestial omen scarred the midnight skies. While others sought shelter, they alone stood watchful, marked by fate to walk the perilous path of the ${char.class}.`;
+  const g = char.gender;
+  const subj = g === 'Female' ? 'she' : g === 'Male' ? 'he' : 'they';
+  const pos = g === 'Female' ? 'her' : g === 'Male' ? 'his' : 'their';
+  const tier = char.rarity || 'Common';
 
-  const p2 = `In their youth, when catastrophe descended upon ${char.originRealm}, ${char.name} ventured into the haunted crypts of the elder kings to claim the legendary ${char.signatureWeapon}. It was forged in celestial fires and attuned specifically to their bloodline. In the harrowing duel that followed, pushed to the brink of mortality, they awakened their signature arcana: ${char.specialAbility}. Ever since, carrying the sacred ${char.secondaryItem}, no demon, tyrant, or warlord has stood against their advance without trembling.`;
+  const p1 = `Long before the banners of war were raised across the continents, ${char.fullName} drew ${pos} first breath within ${char.originRealm}. Raised amidst tales of lost dynasties and primeval covenants, ${pos} natural affinity as a ${char.race} became evident when a celestial omen scarred the midnight skies. While others sought shelter, ${subj} alone stood watchful, marked by fate as a ${tier} tier champion walking the perilous path of the ${char.class}.`;
 
-  const p3 = `Now celebrated across taverns and high keeps as ${char.title || 'the Legendary Wanderer'}, ${char.fullName} holds fast to a solemn oath of ${char.alignment.toLowerCase()} honor. Though whispers speak of a lingering shadow in their past and an unresolved reckoning awaiting in ${char.originRealm}, their blade remains unyielding. As dark forces gather once more along the borders of civilization, this formidable ${char.subclass} prepares to write the next chapter of their immortal legend.`;
+  const p2 = `In ${pos} youth, when catastrophe descended upon ${char.originRealm}, ${char.name} ventured into the haunted crypts of the elder kings to claim the legendary ${char.signatureWeapon}. It was forged in celestial fires and attuned specifically to ${pos} bloodline. In the harrowing duel that followed, pushed to the brink of mortality, ${subj} awakened ${pos} signature arcana: ${char.specialAbility}. Ever since, carrying the sacred ${char.secondaryItem}, no demon, tyrant, or warlord has stood against ${pos} advance without trembling.`;
+
+  const p3 = `Now celebrated across taverns and high keeps as ${char.title || 'the Legendary Wanderer'}, ${char.fullName} holds fast to a solemn oath of ${char.alignment.toLowerCase()} honor. Though whispers speak of a lingering shadow in ${pos} past and an unresolved reckoning awaiting in ${char.originRealm}, ${pos} blade remains unyielding. As dark forces gather once more along the borders of civilization, this formidable ${char.subclass} prepares to write the next chapter of ${pos} immortal legend.`;
 
   return `${p1}\n\n${p2}\n\n${p3}`;
 }

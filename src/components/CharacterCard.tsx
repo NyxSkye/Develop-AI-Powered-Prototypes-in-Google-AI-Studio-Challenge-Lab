@@ -3,10 +3,11 @@ import {
   Shield, Sparkles, Zap, Compass, Sun, ShieldAlert, 
   TreePine, Music, Eye, Flame, Heart, Swords, 
   BookOpen, MapPin, Copy, Check, PlusCircle, CheckCircle2,
-  Crown, Brain
+  Crown, Brain, Gem
 } from 'lucide-react';
 import { FantasyCharacter, CharacterClassType } from '../types/character';
 import { getStatModifier } from '../utils/characterGenerator';
+import { RARITY_CONFIGS } from '../data/fantasyData';
 import { CharacterPortrait } from './CharacterPortrait';
 import { BackstoryGenerator } from './BackstoryGenerator';
 import { CourseHookGenerator } from './CourseHookGenerator';
@@ -43,10 +44,14 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const ClassIcon = CLASS_ICONS[character.class] || Swords;
+  const rarity = character.rarity || 'Common';
+  const rarityConfig = RARITY_CONFIGS[rarity] || RARITY_CONFIGS.Common;
 
   const handleCopy = () => {
     const textSummary = `
 === 🜚 ${character.fullName.toUpperCase()} 🜚 ===
+Rarity: ${character.rarity || 'Common'} Tier
+Gender: ${character.gender || 'Unknown'}
 Class: ${character.class} (${character.subclass})
 Race: ${character.race}
 Alignment: ${character.alignment}
@@ -91,9 +96,9 @@ ${character.backstory}
   ];
 
   return (
-    /* A single, neatly bounded and bordered player card containing ALL character information */
+    /* A single, neatly bounded player card with colored border & glow reflecting Rarity */
     <article 
-      className={`parchment-card relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-amber-700/60 shadow-2xl transition-all duration-300 ${
+      className={`parchment-card relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 transition-all duration-300 ${rarityConfig.cardBorder} ${rarityConfig.cardGlow} ${
         isRolling ? 'opacity-50 scale-[0.99] filter blur-[1px]' : 'opacity-100 scale-100'
       }`}
     >
@@ -103,17 +108,51 @@ ${character.backstory}
       <div className="absolute bottom-2.5 left-2.5 w-7 h-7 border-b-2 border-l-2 border-amber-400/90 z-20 pointer-events-none" />
       <div className="absolute bottom-2.5 right-2.5 w-7 h-7 border-b-2 border-r-2 border-amber-400/90 z-20 pointer-events-none" />
 
-      {/* Runic Accent Top Banner */}
+      {/* Runic Accent Top Banner with Rarity Color Theme */}
       <div 
-        className="h-2 w-full bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700" 
-        style={{ backgroundColor: character.accentColor }}
+        className="h-2.5 w-full bg-gradient-to-r transition-colors duration-500" 
+        style={{
+          background: rarity === 'Legendary'
+            ? 'linear-gradient(90deg, #b45309, #fbbf24, #f59e0b, #fbbf24, #b45309)'
+            : rarity === 'Epic'
+            ? 'linear-gradient(90deg, #581c87, #c084fc, #9333ea, #c084fc, #581c87)'
+            : rarity === 'Rare'
+            ? 'linear-gradient(90deg, #0369a1, #38bdf8, #0284c7, #38bdf8, #0369a1)'
+            : 'linear-gradient(90deg, #44403c, #a8a29e, #78716c, #a8a29e, #44403c)'
+        }}
       />
 
       <div className="p-6 sm:p-8 space-y-6">
-        {/* 1. Header: Name & Class in Stylized Fantasy Font */}
+        {/* 1. Header: Name & Class with Rarity Badge and Gender */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-900/50">
           <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
+            {/* Badges Bar: Rarity Badge, Gender, Race & Class */}
+            <div className="flex flex-wrap items-center gap-2 mb-2 text-xs">
+              {/* Colored Rarity Badge to clearly indicate status */}
+              <span 
+                id="character-rarity-badge"
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-['MedievalSharp'] font-bold uppercase tracking-wider border shadow-md transition-all ${rarityConfig.badgeBg} ${rarityConfig.badgeBorder} ${rarityConfig.badgeText}`}
+              >
+                {rarity === 'Legendary' && <Crown className="w-3.5 h-3.5 text-amber-300 animate-pulse" />}
+                {rarity === 'Epic' && <Gem className="w-3.5 h-3.5 text-purple-300" />}
+                {rarity === 'Rare' && <Sparkles className="w-3.5 h-3.5 text-sky-300" />}
+                {rarity === 'Common' && <Shield className="w-3.5 h-3.5 text-stone-400" />}
+                <span>{rarity} Tier</span>
+              </span>
+
+              {/* Gender Badge */}
+              <span 
+                id="character-gender-badge"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-serif font-medium bg-stone-900/90 border border-amber-800/60 text-amber-100 shadow-sm"
+              >
+                <span className="font-bold text-amber-400 text-sm leading-none">
+                  {character.gender === 'Female' ? '♀' : character.gender === 'Male' ? '♂' : '⚧'}
+                </span>
+                <span>{character.gender}</span>
+              </span>
+
+              <span className="text-amber-700">·</span>
+
               <span className="font-mono font-bold tracking-widest text-amber-400 uppercase">
                 {character.race} · {character.class}
               </span>

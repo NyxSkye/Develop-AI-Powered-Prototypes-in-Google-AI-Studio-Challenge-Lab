@@ -22,6 +22,17 @@ export type CharacterRace =
   | 'Aasimar' 
   | 'Gnome';
 
+export type CharacterRarity = 
+  | 'Common' 
+  | 'Rare' 
+  | 'Epic' 
+  | 'Legendary';
+
+export type CharacterGender = 
+  | 'Male' 
+  | 'Female' 
+  | 'Non-binary';
+
 export type Alignment = 
   | 'Lawful Good' 
   | 'Neutral Good' 
@@ -50,6 +61,8 @@ export interface FantasyCharacter {
   class: CharacterClassType;
   subclass: string;
   race: CharacterRace;
+  rarity: CharacterRarity;
+  gender: CharacterGender;
   alignment: Alignment;
   level: number;
   health: number;

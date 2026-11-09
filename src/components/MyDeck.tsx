@@ -1,6 +1,7 @@
 import React from 'react';
-import { Layers, Heart, Sparkles, Swords, Trash2, ExternalLink, Shield } from 'lucide-react';
+import { Layers, Heart, Sparkles, Swords, Trash2, ExternalLink, Shield, Crown, Gem } from 'lucide-react';
 import { FantasyCharacter } from '../types/character';
+import { RARITY_CONFIGS } from '../data/fantasyData';
 
 interface MyDeckProps {
   deck: FantasyCharacter[];
@@ -56,45 +57,63 @@ export const MyDeck: React.FC<MyDeckProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {deck.map((hero) => (
-            <div
-              key={hero.id}
-              className="parchment-card rounded-xl border border-amber-800/50 hover:border-amber-500/60 p-4 transition-all duration-200 shadow-lg group relative flex flex-col justify-between"
-            >
-              {/* Brass mini corner accents */}
-              <div className="absolute top-1.5 left-1.5 w-3 h-3 border-t border-l border-amber-500/60 pointer-events-none" />
-              <div className="absolute top-1.5 right-1.5 w-3 h-3 border-t border-r border-amber-500/60 pointer-events-none" />
-              <div className="absolute bottom-1.5 left-1.5 w-3 h-3 border-b border-l border-amber-500/60 pointer-events-none" />
-              <div className="absolute bottom-1.5 right-1.5 w-3 h-3 border-b border-r border-amber-500/60 pointer-events-none" />
+          {deck.map((hero) => {
+            const rarity = hero.rarity || 'Common';
+            const rarityConfig = RARITY_CONFIGS[rarity] || RARITY_CONFIGS.Common;
+            return (
+              <div
+                key={hero.id}
+                className={`parchment-card rounded-xl border ${rarityConfig.cardBorder} p-4 transition-all duration-200 shadow-lg group relative flex flex-col justify-between ${rarityConfig.cardGlow}`}
+              >
+                {/* Brass mini corner accents */}
+                <div className="absolute top-1.5 left-1.5 w-3 h-3 border-t border-l border-amber-500/60 pointer-events-none" />
+                <div className="absolute top-1.5 right-1.5 w-3 h-3 border-t border-r border-amber-500/60 pointer-events-none" />
+                <div className="absolute bottom-1.5 left-1.5 w-3 h-3 border-b border-l border-amber-500/60 pointer-events-none" />
+                <div className="absolute bottom-1.5 right-1.5 w-3 h-3 border-b border-r border-amber-500/60 pointer-events-none" />
 
-              <div>
-                {/* Header row: Thumbnail & Basic Info */}
-                <div className="flex items-start gap-3">
-                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-amber-700/60 bg-stone-950 shrink-0 shadow-inner">
-                    <img
-                      src={hero.customPortraitUrl || hero.portraitUrl || '/src/assets/images/portrait_cartoon_warrior_1794216277851.jpg'}
-                      alt={hero.fullName}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
-                    />
+                <div>
+                  {/* Top Badges: Rarity & Gender */}
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider border ${rarityConfig.badgeBg} ${rarityConfig.badgeBorder} ${rarityConfig.badgeText}`}>
+                      {rarity === 'Legendary' && <Crown className="w-2.5 h-2.5 text-amber-300" />}
+                      {rarity === 'Epic' && <Gem className="w-2.5 h-2.5 text-purple-300" />}
+                      {rarity === 'Rare' && <Sparkles className="w-2.5 h-2.5 text-sky-300" />}
+                      {rarity === 'Common' && <Shield className="w-2.5 h-2.5 text-stone-400" />}
+                      <span>{rarity}</span>
+                    </span>
+
+                    <span className="text-[10px] font-serif text-amber-300/80 bg-stone-900/90 px-2 py-0.5 rounded border border-amber-900/50">
+                      {hero.gender === 'Female' ? '♀ Female' : hero.gender === 'Male' ? '♂ Male' : '⚧ Non-binary'}
+                    </span>
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider text-amber-400 font-bold">
-                      <span>{hero.race}</span>
-                      <span className="text-amber-700">·</span>
-                      <span>{hero.class}</span>
+                  {/* Header row: Thumbnail & Basic Info */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden border border-amber-700/60 bg-stone-950 shrink-0 shadow-inner">
+                      <img
+                        src={hero.customPortraitUrl || hero.portraitUrl || '/src/assets/images/portrait_cartoon_warrior_1794216277851.jpg'}
+                        alt={hero.fullName}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
 
-                    <h3 className="font-['MedievalSharp'] text-base font-bold text-amber-200 truncate group-hover:text-amber-100 transition-colors">
-                      {hero.fullName}
-                    </h3>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider text-amber-400 font-bold">
+                        <span>{hero.race}</span>
+                        <span className="text-amber-700">·</span>
+                        <span>{hero.class}</span>
+                      </div>
 
-                    <p className="text-[11px] text-amber-500/70 font-serif italic truncate">
-                      Lvl {hero.level} · {hero.subclass}
-                    </p>
+                      <h3 className="font-['MedievalSharp'] text-base font-bold text-amber-200 truncate group-hover:text-amber-100 transition-colors">
+                        {hero.fullName}
+                      </h3>
+
+                      <p className="text-[11px] text-amber-500/70 font-serif italic truncate">
+                        Lvl {hero.level} · {hero.subclass}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
                 {/* Clearly displayed numeric stats: Health, Mana, Strength, Intelligence, Charisma */}
                 <div className="grid grid-cols-5 gap-1 mt-3.5 p-2 rounded-lg bg-stone-950/80 border border-amber-900/40 text-center">
@@ -159,7 +178,8 @@ export const MyDeck: React.FC<MyDeckProps> = ({
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
     </section>

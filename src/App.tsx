@@ -4,7 +4,7 @@ import { GeneratorControls } from './components/GeneratorControls';
 import { CharacterCard } from './components/CharacterCard';
 import { CharacterRoster } from './components/CharacterRoster';
 import { MyDeck } from './components/MyDeck';
-import { FantasyCharacter, CharacterClassType, CharacterRace } from './types/character';
+import { FantasyCharacter, CharacterClassType, CharacterRace, CharacterGender, CharacterRarity } from './types/character';
 import { generateRandomCharacter } from './utils/characterGenerator';
 import { playRollSound, playSaveSound } from './utils/audio';
 
@@ -22,6 +22,8 @@ export default function App() {
   // Filter locking state
   const [lockedClass, setLockedClass] = useState<CharacterClassType | null>(null);
   const [lockedRace, setLockedRace] = useState<CharacterRace | null>(null);
+  const [lockedGender, setLockedGender] = useState<CharacterGender | null>(null);
+  const [lockedRarity, setLockedRarity] = useState<CharacterRarity | null>(null);
 
   // Active generated character
   const [character, setCharacter] = useState<FantasyCharacter>(() => 
@@ -57,14 +59,26 @@ export default function App() {
   };
 
   // Instant generation handler
-  const handleGenerate = useCallback((overrideRace?: CharacterRace | null, overrideClass?: CharacterClassType | null) => {
+  const handleGenerate = useCallback((
+    overrideRace?: CharacterRace | null,
+    overrideClass?: CharacterClassType | null,
+    overrideGender?: CharacterGender | null,
+    overrideRarity?: CharacterRarity | null
+  ) => {
     playRollSound(!soundEnabled);
     setIsRolling(true);
 
     const effectiveRace = overrideRace !== undefined ? overrideRace : lockedRace;
     const effectiveClass = overrideClass !== undefined ? overrideClass : lockedClass;
+    const effectiveGender = overrideGender !== undefined ? overrideGender : lockedGender;
+    const effectiveRarity = overrideRarity !== undefined ? overrideRarity : lockedRarity;
 
-    const newHero = generateRandomCharacter({ lockedClass: effectiveClass, lockedRace: effectiveRace });
+    const newHero = generateRandomCharacter({ 
+      lockedClass: effectiveClass, 
+      lockedRace: effectiveRace,
+      lockedGender: effectiveGender,
+      lockedRarity: effectiveRarity
+    });
     setCharacter(newHero);
 
     const timer = setTimeout(() => {
@@ -72,16 +86,26 @@ export default function App() {
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [soundEnabled, lockedClass, lockedRace]);
+  }, [soundEnabled, lockedClass, lockedRace, lockedGender, lockedRarity]);
 
   const handleSelectRace = (race: CharacterRace | null) => {
     setLockedRace(race);
-    handleGenerate(race, lockedClass);
+    handleGenerate(race, lockedClass, lockedGender, lockedRarity);
   };
 
   const handleSelectClass = (cls: CharacterClassType | null) => {
     setLockedClass(cls);
-    handleGenerate(lockedRace, cls);
+    handleGenerate(lockedRace, cls, lockedGender, lockedRarity);
+  };
+
+  const handleSelectGender = (gender: CharacterGender | null) => {
+    setLockedGender(gender);
+    handleGenerate(lockedRace, lockedClass, gender, lockedRarity);
+  };
+
+  const handleSelectRarity = (rarity: CharacterRarity | null) => {
+    setLockedRarity(rarity);
+    handleGenerate(lockedRace, lockedClass, lockedGender, rarity);
   };
 
   // Keyboard shortcut listener (Spacebar or 'R' to roll)
@@ -175,6 +199,10 @@ export default function App() {
             onSelectLockedClass={handleSelectClass}
             lockedRace={lockedRace}
             onSelectLockedRace={handleSelectRace}
+            lockedGender={lockedGender}
+            onSelectLockedGender={handleSelectGender}
+            lockedRarity={lockedRarity}
+            onSelectLockedRarity={handleSelectRarity}
             isRolling={isRolling}
           />
         </section>

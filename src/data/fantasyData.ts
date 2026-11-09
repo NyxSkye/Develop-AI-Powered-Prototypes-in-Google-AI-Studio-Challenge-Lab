@@ -1,4 +1,137 @@
-import { CharacterClassType, CharacterRace, Alignment } from '../types/character';
+import { 
+  CharacterClassType, 
+  CharacterRace, 
+  Alignment,
+  CharacterRarity,
+  CharacterGender
+} from '../types/character';
+
+export interface RarityConfig {
+  name: CharacterRarity;
+  label: string;
+  badgeBg: string;
+  badgeText: string;
+  badgeBorder: string;
+  cardBorder: string;
+  cardGlow: string;
+  accentColor: string;
+  statBonus: number;
+  healthBonus: number;
+  manaBonus: number;
+  description: string;
+}
+
+export const RARITY_CONFIGS: Record<CharacterRarity, RarityConfig> = {
+  Common: {
+    name: 'Common',
+    label: 'Common',
+    badgeBg: 'bg-stone-800/90 text-stone-200',
+    badgeText: 'text-stone-300',
+    badgeBorder: 'border-stone-500/80',
+    cardBorder: 'border-stone-700/80',
+    cardGlow: 'shadow-xl shadow-black/80',
+    accentColor: '#a8a29e',
+    statBonus: 0,
+    healthBonus: 0,
+    manaBonus: 0,
+    description: 'A standard adventurer forging their nascent legend.',
+  },
+  Rare: {
+    name: 'Rare',
+    label: 'Rare',
+    badgeBg: 'bg-sky-950/95 text-sky-100',
+    badgeText: 'text-sky-300',
+    badgeBorder: 'border-sky-500',
+    cardBorder: 'border-sky-500',
+    cardGlow: 'shadow-[0_0_35px_rgba(56,189,248,0.35)] ring-1 ring-sky-500/50',
+    accentColor: '#38bdf8',
+    statBonus: 2,
+    healthBonus: 15,
+    manaBonus: 15,
+    description: 'An exceptional champion gifted with resonant arcana.',
+  },
+  Epic: {
+    name: 'Epic',
+    label: 'Epic',
+    badgeBg: 'bg-purple-950/95 text-purple-100',
+    badgeText: 'text-purple-300',
+    badgeBorder: 'border-purple-500',
+    cardBorder: 'border-purple-500',
+    cardGlow: 'shadow-[0_0_40px_rgba(192,132,252,0.45)] ring-1 ring-purple-500/60',
+    accentColor: '#c084fc',
+    statBonus: 4,
+    healthBonus: 35,
+    manaBonus: 35,
+    description: 'A legendary Paragon revered throughout kingdoms.',
+  },
+  Legendary: {
+    name: 'Legendary',
+    label: 'Legendary',
+    badgeBg: 'bg-gradient-to-r from-amber-950 via-yellow-900/90 to-amber-950 text-amber-100',
+    badgeText: 'text-amber-300 font-extrabold',
+    badgeBorder: 'border-amber-400',
+    cardBorder: 'border-amber-400',
+    cardGlow: 'shadow-[0_0_50px_rgba(251,191,36,0.6)] ring-2 ring-amber-400/80',
+    accentColor: '#fbbf24',
+    statBonus: 6,
+    healthBonus: 60,
+    manaBonus: 60,
+    description: 'A mythic demigod whose deeds echo across eternity.',
+  },
+};
+
+export const GENDERED_FIRST_NAMES: Record<CharacterRace, Record<CharacterGender, string[]>> = {
+  'Human': {
+    'Male': ['Alden', 'Baelor', 'Cassian', 'Darius', 'Gawain', 'Jareth', 'Kaelen', 'Leofric', 'Morgath', 'Oswin', 'Cedric', 'Theron'],
+    'Female': ['Elysia', 'Helena', 'Isolde', 'Nesta', 'Althea', 'Morrigan', 'Gwendolyn', 'Brianne', 'Maeve', 'Rowena', 'Lyanna'],
+    'Non-binary': ['Rowan', 'Valen', 'Thorne', 'Corwin', 'Morgan', 'Ash', 'Peregrine', 'Linden', 'Sterling', 'Wynn']
+  },
+  'High Elf': {
+    'Male': ['Aeldir', 'Faenor', 'Galadhel', 'Maelor', 'Sylas', 'Theren', 'Zephyrion', 'Caelum', 'Eryndor', 'Thalor'],
+    'Female': ['Aerith', 'Caelynn', 'Elora', 'Ilyndra', 'Laurelin', 'Nimrodel', 'Quelanna', 'Valariel', 'Astraea', 'Lyariel', 'Vespera'],
+    'Non-binary': ['Faelivrin', 'Ilphrin', 'Silvyr', 'Sylvan', 'Zephyr', 'Kael', 'Eirian', 'Rael', 'Alin']
+  },
+  'Wood Elf': {
+    'Male': ['Caelan', 'Garrick', 'Silas', 'Tarkon', 'Corin', 'Fenric', 'Talon', 'Eamon', 'Kaelen'],
+    'Female': ['Fawn', 'Lirien', 'Moriel', 'Willow', 'Ysolde', 'Emberlyn', 'Briar', 'Sylvanas', 'Cheryl'],
+    'Non-binary': ['Bramble', 'Duskwood', 'Hawthorne', 'Kaelis', 'Oaklyn', 'Rowan', 'Moss', 'Sylvane', 'Brier', 'Rain']
+  },
+  'Mountain Dwarf': {
+    'Male': ['Balin', 'Balgor', 'Brakka', 'Dain', 'Durin', 'Gimrik', 'Harbek', 'Kragan', 'Morgran', 'Orsik', 'Rurik', 'Thorgar', 'Torvald', 'Ulfgar', 'Vondal', 'Bofur', 'Gror'],
+    'Female': ['Brunhild', 'Dagmar', 'Helga', 'Mardred', 'Thora', 'Astrid', 'Eldeth', 'Finellen', 'Gurdis', 'Liftrasa'],
+    'Non-binary': ['Kaelin', 'Skalgar', 'Durn', 'Korin', 'Torren', 'Barin', 'Flint', 'Bran', 'Rust']
+  },
+  'Dragonborn': {
+    'Male': ['Arjhan', 'Balasar', 'Bharash', 'Donaar', 'Ghesh', 'Heskan', 'Medrash', 'Nadarr', 'Patrin', 'Rhogar', 'Shamash', 'Shedinn', 'Tarhun', 'Torinn'],
+    'Female': ['Akra', 'Biri', 'Daar', 'Harann', 'Kava', 'Mishann', 'Nala', 'Surina', 'Sora', 'Korra'],
+    'Non-binary': ['Kriv', 'Vraka', 'Pyroth', 'Jax', 'Ignis', 'Sylvan', 'Dran', 'Zeth']
+  },
+  'Tiefling': {
+    'Male': ['Akmenos', 'Amnon', 'Barakas', 'Damakos', 'Ekemon', 'Iados', 'Kairon', 'Leucis', 'Melech', 'Mordai', 'Nirikos', 'Pelaios', 'Skamos', 'Therai'],
+    'Female': ['Criella', 'Damaia', 'Kallista', 'Lerissa', 'Makaria', 'Nemeia', 'Orianna', 'Phelaia', 'Rieta', 'Artora', 'Lilith'],
+    'Non-binary': ['Vesper', 'Haven', 'Creed', 'Echo', 'Malice', 'Zephyr', 'Rune', 'Shade', 'Cinder']
+  },
+  'Halfling': {
+    'Male': ['Alton', 'Ander', 'Cade', 'Corrin', 'Eldon', 'Errich', 'Finnan', 'Garret', 'Lindal', 'Lyle', 'Merric', 'Milo', 'Osborn', 'Roscoe', 'Wellby'],
+    'Female': ['Bree', 'Callie', 'Cora', 'Euphemia', 'Jillian', 'Kithri', 'Lavinia', 'Portia', 'Seraphina', 'Verna'],
+    'Non-binary': ['Perrin', 'Reed', 'Robin', 'Pip', 'Clover', 'Dale', 'Wren', 'Sam']
+  },
+  'Orc': {
+    'Male': ['Brak', 'Dench', 'Feng', 'Henk', 'Holg', 'Imsh', 'Kragk', 'Mhurren', 'Ront', 'Shump', 'Thokk', 'Ugor', 'Vorn', 'Gor'],
+    'Female': ['Baggi', 'Emen', 'Engong', 'Kansif', 'Myev', 'Neega', 'Ovak', 'Ownka', 'Shautha', 'Vola', 'Grusha'],
+    'Non-binary': ['Gell', 'Keth', 'Tor', 'Rok', 'Ash', 'Mor', 'Vash', 'Skar']
+  },
+  'Aasimar': {
+    'Male': ['Azariel', 'Cassiel', 'Gabriel', 'Hadriel', 'Jaelen', 'Mikael', 'Nuriel', 'Raziel', 'Sariel', 'Uriel', 'Zadkiel', 'Aurelius'],
+    'Female': ['Celestia', 'Elysium', 'Lumiel', 'Seraphina', 'Solaria', 'Valora', 'Angelica', 'Lyra', 'Evangeline'],
+    'Non-binary': ['Dawn', 'Hope', 'Justice', 'Patience', 'Radiance', 'Solaria', 'Veritas', 'Pax', 'Halo', 'Haven']
+  },
+  'Gnome': {
+    'Male': ['Boddynock', 'Dimble', 'Fonkin', 'Gerbo', 'Gimble', 'Jebeddo', 'Namfoodle', 'Orryn', 'Roondar', 'Seebo', 'Sindri', 'Warryn', 'Zook'],
+    'Female': ['Bimpnottin', 'Breena', 'Caramip', 'Donella', 'Duvamil', 'Ella', 'Ellywick', 'Lilli', 'Loopmottin', 'Roywyn', 'Tana'],
+    'Non-binary': ['Glim', 'Kellen', 'Fiddle', 'Pip', 'Spark', 'Tock', 'Quill', 'Widget', 'Finch']
+  }
+};
 
 export const FIRST_NAMES: Record<CharacterRace, string[]> = {
   'Human': [
