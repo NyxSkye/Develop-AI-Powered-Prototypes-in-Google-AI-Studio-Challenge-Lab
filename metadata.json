@@ -1,0 +1,6 @@
+{
+  "name": "Fantasy Character Creator",
+  "description": "An instant generator for legendary fantasy characters, featuring randomized names, classes, attributes, lore, and visual character sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
