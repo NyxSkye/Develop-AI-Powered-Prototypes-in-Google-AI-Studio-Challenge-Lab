@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { GeneratorControls } from './components/GeneratorControls';
 import { CharacterCard } from './components/CharacterCard';
 import { CharacterRoster } from './components/CharacterRoster';
+import { MyDeck } from './components/MyDeck';
 import { FantasyCharacter, CharacterClassType } from './types/character';
 import { generateRandomCharacter } from './utils/characterGenerator';
 import { playRollSound, playSaveSound } from './utils/audio';
@@ -29,10 +30,10 @@ export default function App() {
   // Rolling animation state for smooth visual feedback
   const [isRolling, setIsRolling] = useState(false);
 
-  // Saved characters roster
-  const [savedCharacters, setSavedCharacters] = useState<FantasyCharacter[]>(() => {
+  // "My Deck" state persisted in localStorage
+  const [deck, setDeck] = useState<FantasyCharacter[]>(() => {
     try {
-      const stored = localStorage.getItem('arcane_saved_characters');
+      const stored = localStorage.getItem('arcane_my_deck');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -41,7 +42,7 @@ export default function App() {
 
   const [isRosterOpen, setIsRosterOpen] = useState(false);
 
-  // Save sound setting
+  // Toggle sound setting
   const toggleSound = () => {
     setSoundEnabled((prev) => {
       const next = !prev;
@@ -59,11 +60,9 @@ export default function App() {
     playRollSound(!soundEnabled);
     setIsRolling(true);
 
-    // Instant zero-delay character calculation
     const newHero = generateRandomCharacter({ lockedClass });
     setCharacter(newHero);
 
-    // Micro-settle for dice roll tactile feedback
     const timer = setTimeout(() => {
       setIsRolling(false);
     }, 150);
@@ -74,7 +73,6 @@ export default function App() {
   // Keyboard shortcut listener (Spacebar or 'R' to roll)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is typing in an input
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
         return;
       }
@@ -88,19 +86,22 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleGenerate]);
 
-  // Toggle saving to party codex
-  const handleToggleSave = () => {
-    setSavedCharacters((prev) => {
+  // "Save to Deck" action handler
+  const handleSaveToDeck = () => {
+    playSaveSound(!soundEnabled);
+    setDeck((prev) => {
+      // Check if this exact character ID already exists in deck
       const exists = prev.some((c) => c.id === character.id);
       let updated: FantasyCharacter[];
       if (exists) {
+        // If already in deck, remove/toggle or keep
         updated = prev.filter((c) => c.id !== character.id);
       } else {
-        playSaveSound(!soundEnabled);
+        // Append into My Deck list
         updated = [character, ...prev];
       }
       try {
-        localStorage.setItem('arcane_saved_characters', JSON.stringify(updated));
+        localStorage.setItem('arcane_my_deck', JSON.stringify(updated));
       } catch {
         // Ignore
       }
@@ -108,11 +109,11 @@ export default function App() {
     });
   };
 
-  const handleRemoveFromRoster = (id: string) => {
-    setSavedCharacters((prev) => {
+  const handleRemoveFromDeck = (id: string) => {
+    setDeck((prev) => {
       const updated = prev.filter((c) => c.id !== id);
       try {
-        localStorage.setItem('arcane_saved_characters', JSON.stringify(updated));
+        localStorage.setItem('arcane_my_deck', JSON.stringify(updated));
       } catch {
         // Ignore
       }
@@ -120,10 +121,10 @@ export default function App() {
     });
   };
 
-  const handleClearAllRoster = () => {
-    setSavedCharacters([]);
+  const handleClearDeck = () => {
+    setDeck([]);
     try {
-      localStorage.removeItem('arcane_saved_characters');
+      localStorage.removeItem('arcane_my_deck');
     } catch {
       // Ignore
     }
@@ -137,7 +138,7 @@ export default function App() {
     }));
   };
 
-  const isCurrentHeroSaved = savedCharacters.some((c) => c.id === character.id);
+  const isCurrentHeroInDeck = deck.some((c) => c.id === character.id);
 
   return (
     <div className="min-h-screen workbench-bg text-amber-100/90 flex flex-col font-serif selection:bg-amber-600/30 selection:text-amber-200 relative">
@@ -145,7 +146,7 @@ export default function App() {
       <Header
         soundEnabled={soundEnabled}
         onToggleSound={toggleSound}
-        savedCount={savedCharacters.length}
+        savedCount={deck.length}
         onOpenRoster={() => setIsRosterOpen(true)}
         onGenerateNew={handleGenerate}
       />
@@ -162,17 +163,28 @@ export default function App() {
           />
         </section>
 
-        {/* The Random Character Display Card with CharacterPortrait and Generate/Regenerate buttons */}
+        {/* 1. SINGLE BORDERED PLAYER CARD: Containing Name, Class, Portrait, Stats (Health, Mana, Strength), and Backstory */}
         <section aria-label="Active Character Sheet" className="w-full mt-4">
           <CharacterCard
             character={character}
-            isSaved={isCurrentHeroSaved}
-            onToggleSave={handleToggleSave}
+            isInDeck={isCurrentHeroInDeck}
+            onSaveToDeck={handleSaveToDeck}
             isRolling={isRolling}
             soundEnabled={soundEnabled}
             onUpdatePortrait={handleUpdatePortrait}
           />
         </section>
+
+        {/* 2. LIST SECTION AT BOTTOM TITLED "My Deck" */}
+        <MyDeck
+          deck={deck}
+          onSelectCharacter={(hero) => {
+            setCharacter(hero);
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+          }}
+          onRemoveFromDeck={handleRemoveFromDeck}
+          onClearDeck={handleClearDeck}
+        />
       </main>
 
       {/* Ancient Alchemist Workbench Themed Footer */}
@@ -188,19 +200,22 @@ export default function App() {
             </span>
           </div>
           <div className="text-amber-400/60 text-xs font-serif">
-            Click crucible or press Space to transmute random heroes
+            Click crucible or press Space to transmute random heroes · Save to My Deck anytime
           </div>
         </div>
       </footer>
 
-      {/* Party Codex Drawer */}
+      {/* Grimoire Codex Drawer */}
       <CharacterRoster
         isOpen={isRosterOpen}
         onClose={() => setIsRosterOpen(false)}
-        savedCharacters={savedCharacters}
-        onSelectCharacter={setCharacter}
-        onRemoveCharacter={handleRemoveFromRoster}
-        onClearAll={handleClearAllRoster}
+        savedCharacters={deck}
+        onSelectCharacter={(hero) => {
+          setCharacter(hero);
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        }}
+        onRemoveCharacter={handleRemoveFromDeck}
+        onClearAll={handleClearDeck}
       />
     </div>
   );

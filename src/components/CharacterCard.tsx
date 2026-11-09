@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { 
   Shield, Sparkles, Zap, Compass, Sun, ShieldAlert, 
   TreePine, Music, Eye, Flame, Heart, Swords, 
-  BookOpen, MapPin, Copy, Check, Bookmark, 
-  BookmarkCheck
+  BookOpen, MapPin, Copy, Check, PlusCircle, CheckCircle2
 } from 'lucide-react';
 import { FantasyCharacter, CharacterClassType } from '../types/character';
 import { getStatModifier } from '../utils/characterGenerator';
@@ -12,8 +11,8 @@ import { BackstoryGenerator } from './BackstoryGenerator';
 
 interface CharacterCardProps {
   character: FantasyCharacter;
-  isSaved: boolean;
-  onToggleSave: () => void;
+  isInDeck: boolean;
+  onSaveToDeck: () => void;
   isRolling: boolean;
   soundEnabled: boolean;
   onUpdatePortrait: (url: string, styleName: string) => void;
@@ -32,20 +31,10 @@ const CLASS_ICONS: Record<CharacterClassType, React.ElementType> = {
   Monk: Flame,
 };
 
-// Alchemical elemental correspondence symbols
-const STAT_ALCHEMICAL_SYMBOLS: Record<string, string> = {
-  STR: '🜂', // Fire / Strength
-  DEX: '🜁', // Air / Agility
-  CON: '🜃', // Earth / Constitution
-  INT: '☿', // Mercury / Intellect
-  WIS: '🜄', // Water / Wisdom
-  CHA: '☉', // Sol / Charisma
-};
-
 export const CharacterCard: React.FC<CharacterCardProps> = ({
   character,
-  isSaved,
-  onToggleSave,
+  isInDeck,
+  onSaveToDeck,
   isRolling,
   soundEnabled,
   onUpdatePortrait,
@@ -59,9 +48,14 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
 Class: ${character.class} (${character.subclass})
 Race: ${character.race}
 Alignment: ${character.alignment}
-Level: ${character.level} | HP: ${character.hp} | AC: ${character.armorClass}
+Level: ${character.level}
 
--- ALCHEMICAL VITAL ATTRIBUTES --
+-- THREE NUMERIC STATS --
+Health: ${character.health}
+Mana: ${character.mana}
+Strength: ${character.strength}
+
+-- CORE D20 ATTRIBUTES --
 STR: ${character.stats.strength} (${getStatModifier(character.stats.strength)})
 DEX: ${character.stats.dexterity} (${getStatModifier(character.stats.dexterity)})
 CON: ${character.stats.constitution} (${getStatModifier(character.stats.constitution)})
@@ -84,241 +78,239 @@ ${character.backstory}
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const statItems = [
-    { label: 'STR', name: 'Strength', val: character.stats.strength },
-    { label: 'DEX', name: 'Dexterity', val: character.stats.dexterity },
-    { label: 'CON', name: 'Constitution', val: character.stats.constitution },
-    { label: 'INT', name: 'Intelligence', val: character.stats.intelligence },
+  const secondaryStats = [
+    { label: 'DEX', name: 'Agility', val: character.stats.dexterity },
+    { label: 'CON', name: 'Vitality', val: character.stats.constitution },
+    { label: 'INT', name: 'Intellect', val: character.stats.intelligence },
     { label: 'WIS', name: 'Wisdom', val: character.stats.wisdom },
-    { label: 'CHA', name: 'Charisma', val: character.stats.charisma },
+    { label: 'CHA', name: 'Presence', val: character.stats.charisma },
   ];
 
   return (
+    /* A single, neatly bounded and bordered player card containing ALL character information */
     <article 
-      className={`parchment-card relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-amber-800/50 shadow-2xl transition-all duration-300 ${
+      className={`parchment-card relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-amber-700/60 shadow-2xl transition-all duration-300 ${
         isRolling ? 'opacity-50 scale-[0.99] filter blur-[1px]' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Brass corner brackets on the Grimoire folio */}
-      <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-500/80 z-20 pointer-events-none" />
-      <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-500/80 z-20 pointer-events-none" />
-      <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-500/80 z-20 pointer-events-none" />
-      <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-500/80 z-20 pointer-events-none" />
+      {/* Ornate Brass Corner Brackets */}
+      <div className="absolute top-2.5 left-2.5 w-7 h-7 border-t-2 border-l-2 border-amber-400/90 z-20 pointer-events-none" />
+      <div className="absolute top-2.5 right-2.5 w-7 h-7 border-t-2 border-r-2 border-amber-400/90 z-20 pointer-events-none" />
+      <div className="absolute bottom-2.5 left-2.5 w-7 h-7 border-b-2 border-l-2 border-amber-400/90 z-20 pointer-events-none" />
+      <div className="absolute bottom-2.5 right-2.5 w-7 h-7 border-b-2 border-r-2 border-amber-400/90 z-20 pointer-events-none" />
 
-      {/* Runic gold foil top rule */}
+      {/* Runic Accent Top Banner */}
       <div 
-        className="h-1.5 w-full bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700" 
+        className="h-2 w-full bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700" 
         style={{ backgroundColor: character.accentColor }}
       />
 
-      <div className="p-6 sm:p-8 space-y-8">
-        {/* Top Section: Portrait & Identity */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+      <div className="p-6 sm:p-8 space-y-6">
+        {/* 1. Header: Name & Class in Stylized Fantasy Font */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-900/50">
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
+              <span className="font-mono font-bold tracking-widest text-amber-400 uppercase">
+                {character.race} · {character.class}
+              </span>
+              <span className="text-amber-700">·</span>
+              <span className="text-amber-200/80 font-serif italic">{character.subclass}</span>
+              <span className="text-amber-700">·</span>
+              <span className="font-mono text-amber-400/90 text-[11px]">Level {character.level}</span>
+            </div>
+
+            {/* Distinct Stylized Fantasy Font for Character's Name */}
+            <h1 className="font-['MedievalSharp'] text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-200 drop-shadow-[0_2px_12px_rgba(245,158,11,0.35)] leading-tight text-balance">
+              {character.fullName}
+            </h1>
+          </div>
+
+          {/* New "Save to Deck" button right in the card header for quick action */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              onClick={onSaveToDeck}
+              id="save-to-deck-btn"
+              aria-label="Save character to My Deck"
+              className={`alchemist-brass-btn flex items-center justify-center gap-2 py-2.5 px-5 text-xs sm:text-sm font-['MedievalSharp'] font-bold rounded-xl transition-all cursor-pointer shadow-md ${
+                isInDeck ? 'opacity-90 ring-2 ring-amber-300' : ''
+              }`}
+            >
+              {isInDeck ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4 text-amber-950" />
+                  <span>Saved to Deck</span>
+                </>
+              ) : (
+                <>
+                  <PlusCircle className="w-4 h-4 text-amber-950" />
+                  <span>Save to Deck</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={handleCopy}
+              title="Transcribe full card to clipboard"
+              className="alchemist-slate-btn p-2.5 rounded-xl text-amber-300 hover:text-amber-100 transition-colors cursor-pointer"
+            >
+              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* 2. THREE NEW RANDOMLY GENERATED NUMERIC STATS: Health, Mana, and Strength */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 p-4 rounded-2xl bg-stone-950/85 border border-amber-900/60 shadow-inner">
+          {/* Health Stat */}
+          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-rose-900/40 relative overflow-hidden group">
+            <div className="w-11 h-11 rounded-xl bg-rose-950/80 border border-rose-600/50 flex items-center justify-center text-rose-400 shrink-0 shadow-inner">
+              <Heart className="w-6 h-6 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-rose-300/90 block">
+                Health
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-rose-100 tabular-nums">
+                  {character.health}
+                </span>
+                <span className="text-[10px] font-mono text-rose-400/80">HP</span>
+              </div>
+            </div>
+            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-rose-950/40 select-none pointer-events-none">
+              🜂
+            </div>
+          </div>
+
+          {/* Mana Stat */}
+          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-sky-900/40 relative overflow-hidden group">
+            <div className="w-11 h-11 rounded-xl bg-sky-950/80 border border-sky-600/50 flex items-center justify-center text-sky-400 shrink-0 shadow-inner">
+              <Sparkles className="w-6 h-6 text-sky-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-sky-300/90 block">
+                Mana
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-sky-100 tabular-nums">
+                  {character.mana}
+                </span>
+                <span className="text-[10px] font-mono text-sky-400/80">MP</span>
+              </div>
+            </div>
+            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-sky-950/40 select-none pointer-events-none">
+              🜄
+            </div>
+          </div>
+
+          {/* Strength Stat */}
+          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-amber-900/40 relative overflow-hidden group">
+            <div className="w-11 h-11 rounded-xl bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+              <Swords className="w-6 h-6 text-amber-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-amber-300/90 block">
+                Strength
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-amber-100 tabular-nums">
+                  {character.strength}
+                </span>
+                <span className="text-[10px] font-mono text-amber-400/80">STR</span>
+              </div>
+            </div>
+            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-amber-950/40 select-none pointer-events-none">
+              🜚
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Center Grid: Portrait (with Generate/Regenerate buttons) + Armaments & Lore */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Portrait Column */}
-          <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center">
-            {/* Dedicated Character Portrait Image Component with Generate & Regenerate Buttons */}
+          <div className="md:col-span-5 lg:col-span-5 flex flex-col items-center">
             <CharacterPortrait
               character={character}
               onUpdatePortrait={onUpdatePortrait}
               isRolling={isRolling}
               soundEnabled={soundEnabled}
             />
-
-            {/* Quick Actions underneath portrait buttons */}
-            <div className="flex items-center gap-2 mt-4 w-full max-w-[320px]">
-              <button
-                onClick={onToggleSave}
-                className={`alchemist-slate-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-serif font-medium rounded-xl transition-all cursor-pointer ${
-                  isSaved
-                    ? 'border-amber-400 text-amber-200 bg-amber-950/80 shadow-inner'
-                    : 'text-amber-200/80 hover:text-amber-100'
-                }`}
-              >
-                {isSaved ? <BookmarkCheck className="w-3.5 h-3.5 text-amber-400" /> : <Bookmark className="w-3.5 h-3.5 text-amber-500" />}
-                <span>{isSaved ? 'In Codex' : 'Bind to Codex'}</span>
-              </button>
-
-              <button
-                onClick={handleCopy}
-                title="Transcribe character details to parchment"
-                className="alchemist-slate-btn flex items-center justify-center gap-1.5 py-2.5 px-3.5 text-xs font-serif font-medium text-amber-200/80 hover:text-amber-100 rounded-xl transition-all cursor-pointer"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
-                <span>{copied ? 'Inscribed!' : 'Transcribe'}</span>
-              </button>
-            </div>
           </div>
 
-          {/* Details Column */}
-          <div className="md:col-span-7 lg:col-span-8 space-y-5">
-            {/* Name & Class Header */}
-            <div>
-              <div className="flex flex-wrap items-baseline gap-2 mb-1.5">
-                <span className="text-xs uppercase tracking-widest text-amber-400 font-bold font-mono">
-                  {character.race} · {character.class}
-                </span>
-                <span className="text-xs text-amber-700">·</span>
-                <span className="text-xs text-amber-200/70 font-serif italic">{character.subclass}</span>
+          {/* Attributes, Armament & Origin Column */}
+          <div className="md:col-span-7 lg:col-span-7 space-y-4">
+            {/* Origin & Alignment */}
+            <div className="p-3.5 rounded-xl bg-stone-950/70 border border-amber-900/40 flex items-center justify-between text-xs font-serif">
+              <div className="flex items-center gap-1.5 text-amber-300/90">
+                <MapPin className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-amber-500 font-semibold">Origin Realm:</span>
+                <span>{character.originRealm}</span>
               </div>
-
-              {/* DISTINCT, STYLIZED FANTASY-STYLE FONT FOR THE CHARACTER'S NAME */}
-              <div className="relative group">
-                <h1 className="font-['MedievalSharp'] text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-200 drop-shadow-[0_2px_12px_rgba(245,158,11,0.35)] leading-tight text-balance">
-                  {character.fullName}
-                </h1>
-                {/* Subtle illuminated alchemical flourish line */}
-                <div className="h-0.5 w-32 bg-gradient-to-r from-amber-500/80 to-transparent mt-1.5 rounded-full" />
-              </div>
-
-              {/* Zero-Pill Clean Metadata Row styled in ancient ink */}
-              <div className="flex flex-wrap items-center gap-2 mt-3 text-xs text-amber-200/70 font-serif">
-                <span>{character.alignment}</span>
-                <span aria-hidden="true" className="text-amber-700">·</span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-amber-500" />
-                  {character.originRealm}
-                </span>
+              <div className="text-amber-400/80 font-mono text-[11px]">
+                {character.alignment}
               </div>
             </div>
 
-            {/* Vital Combat Transmutation Crucible Meters */}
-            <div className="grid grid-cols-3 gap-3 p-3.5 bg-stone-950/80 border border-amber-900/50 rounded-xl shadow-inner shadow-stone-950">
-              <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-stone-900/60 border border-amber-900/30">
-                <span className="text-[10px] uppercase tracking-wider text-amber-400/90 font-serif flex items-center gap-1">
-                  <Heart className="w-3 h-3 text-rose-400" /> Vitality (HP)
-                </span>
-                <span className="font-mono text-xl font-bold text-amber-100 tabular-nums mt-0.5">
-                  {character.hp}
-                </span>
-                <span className="text-[10px] text-amber-600 font-serif">Life Force</span>
-              </div>
-
-              <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-stone-900/60 border border-amber-900/30">
-                <span className="text-[10px] uppercase tracking-wider text-amber-400/90 font-serif flex items-center gap-1">
-                  <Shield className="w-3 h-3 text-amber-400" /> Ward (AC)
-                </span>
-                <span className="font-mono text-xl font-bold text-amber-100 tabular-nums mt-0.5">
-                  {character.armorClass}
-                </span>
-                <span className="text-[10px] text-amber-600 font-serif">Aegis Rating</span>
-              </div>
-
-              <div className="flex flex-col items-center justify-center p-2.5 rounded-lg bg-stone-900/60 border border-amber-900/30">
-                <span className="text-[10px] uppercase tracking-wider text-amber-400/90 font-serif flex items-center gap-1">
-                  <Swords className="w-3 h-3 text-amber-300" /> Circle Tier
-                </span>
-                <span className="font-mono text-xl font-bold text-amber-100 tabular-nums mt-0.5">
-                  Lvl {character.level}
-                </span>
-                <span className="text-[10px] text-amber-600 font-serif">Adept Rank</span>
-              </div>
-            </div>
-
-            {/* 6 Core Alchemical Elemental Attributes */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs text-amber-300/80 border-b border-amber-900/40 pb-1.5 font-serif">
-                <span className="font-semibold flex items-center gap-1.5">
-                  <span>Elemental Matrix</span>
-                  <span className="text-amber-600 text-xs select-none">🜁 🜂 🜃 🜄</span>
-                </span>
-                <span className="text-[11px] text-amber-500/80 font-mono">d20 Modifiers</span>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {statItems.map((st) => {
-                  const mod = getStatModifier(st.val);
-                  const alchemicalGlyph = STAT_ALCHEMICAL_SYMBOLS[st.label] || '🜚';
-                  return (
-                    <div 
-                      key={st.label}
-                      className="p-2.5 rounded-lg bg-stone-950/75 border border-amber-900/40 shadow-inner flex flex-col items-center text-center group hover:border-amber-600/60 transition-colors"
-                    >
-                      <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-amber-400/80 tracking-wider">
-                        <span className="text-amber-500/70">{alchemicalGlyph}</span>
-                        <span>{st.label}</span>
-                      </div>
-                      <span className="font-mono text-lg font-bold text-amber-100 tabular-nums">
-                        {st.val}
-                      </span>
-                      <span className="font-mono text-[11px] text-amber-400 font-semibold tabular-nums">
-                        {mod}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Alchemical Grimoire Hairline Divider */}
-        <div className="relative flex items-center justify-center my-4">
-          <hr className="w-full border-amber-900/40" />
-          <span className="absolute px-3 bg-[#17120e] text-amber-600 text-xs font-serif select-none">
-            🜚 · ARS MAGNA · 🜚
-          </span>
-        </div>
-
-        {/* Armaments & Lore Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Signature Equipment & Feats */}
-          <div className="space-y-3">
-            <h3 className="font-['MedievalSharp'] text-base font-bold text-amber-200 flex items-center gap-2">
-              <Swords className="w-4 h-4 text-amber-400" />
-              <span>Attuned Armament & Feats</span>
-            </h3>
-
-            <div className="space-y-2.5 text-xs">
-              <div className="p-3.5 rounded-xl bg-stone-950/75 border border-amber-900/40 shadow-inner">
+            {/* Armament & Abilities */}
+            <div className="space-y-2 text-xs">
+              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
                 <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
-                  Forged Weapon
+                  Signature Weapon
                 </span>
                 <span className="font-serif font-medium text-amber-100">
                   {character.signatureWeapon}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-stone-950/75 border border-amber-900/40 shadow-inner">
+              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
                 <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
-                  Transmutation Feat / Arcana
+                  Special Arcana / Feat
                 </span>
                 <span className="font-serif font-medium text-amber-300">
                   {character.specialAbility}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-stone-950/75 border border-amber-900/40 shadow-inner">
+              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
                 <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
-                  Alchemical Relic
+                  Secondary Relic
                 </span>
                 <span className="font-serif text-amber-200/90">
                   {character.secondaryItem}
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* Chronicled Lore / Backstory in Illuminated Manuscript Style */}
-          <div className="space-y-3">
-            <h3 className="font-['MedievalSharp'] text-base font-bold text-amber-200 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-amber-400" />
-              <span>Grimoire Transmutation Annals</span>
-            </h3>
-
-            <div className="p-4.5 rounded-xl bg-stone-950/75 border border-amber-900/40 shadow-inner h-[calc(100%-2rem)] flex flex-col justify-between">
-              <p className="text-xs leading-relaxed text-amber-100/90 italic font-serif">
-                "{character.backstory}"
-              </p>
-              
-              <div className="mt-4 pt-3 border-t border-amber-950/80 flex items-center justify-between text-[11px] text-amber-400/70 font-serif">
-                <span>Realm of Extraction:</span>
-                <span className="text-amber-200 font-medium">{character.originRealm}</span>
-              </div>
+            {/* Auxiliary Attributes */}
+            <div className="grid grid-cols-5 gap-1.5">
+              {secondaryStats.map((st) => (
+                <div 
+                  key={st.label} 
+                  className="p-2 rounded-lg bg-stone-950/60 border border-amber-950/80 text-center"
+                >
+                  <span className="text-[9px] font-mono font-bold text-amber-500 block">
+                    {st.label}
+                  </span>
+                  <span className="font-mono text-sm font-bold text-amber-200 tabular-nums">
+                    {st.val}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* AI Lorekeeper Section with "Generate Backstory" Button & Output Component */}
-        <div className="pt-2">
+        {/* 4. Backstory Section: Fully Contained Inside This Single Card */}
+        <div className="pt-4 border-t border-amber-900/40">
+          <div className="p-4 rounded-xl bg-stone-950/80 border border-amber-900/40 mb-3 shadow-inner">
+            <span className="text-[10px] font-['MedievalSharp'] uppercase tracking-wider text-amber-400 block mb-1">
+              Short Inscribed Legend
+            </span>
+            <p className="text-xs sm:text-sm text-amber-100/90 font-serif italic leading-relaxed">
+              "{character.backstory}"
+            </p>
+          </div>
+
+          {/* AI Lorekeeper with "Generate Backstory" Button and its output directly beneath */}
           <BackstoryGenerator
             character={character}
             soundEnabled={soundEnabled}

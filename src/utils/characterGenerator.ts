@@ -94,6 +94,14 @@ export function generateRandomCharacter(options?: {
   const dexMod = Math.floor((stats.dexterity - 10) / 2);
   const armorClass = classDef.armorClassBase + Math.min(2, Math.max(0, dexMod));
 
+  // Three distinct randomly generated numeric stats: Health, Mana, Strength
+  const health = 80 + Math.floor(Math.random() * 50) + conMod * 5;
+  const isCaster = ['Mage', 'Warlock', 'Cleric', 'Druid'].includes(selectedClassType);
+  const mana = isCaster 
+    ? 100 + Math.floor(Math.random() * 60)
+    : 40 + Math.floor(Math.random() * 40);
+  const strength = stats.strength; // authentic RPG d20 rolled strength (10 to 18+)
+
   const backstoryTemplate = getRandomElement(BACKSTORY_TEMPLATES);
   const backstory = backstoryTemplate({
     name: firstName,
@@ -113,6 +121,9 @@ export function generateRandomCharacter(options?: {
     race: selectedRace,
     alignment,
     level,
+    health,
+    mana,
+    strength,
     hp: Math.max(12, hp),
     armorClass,
     stats,

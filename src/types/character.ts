@@ -52,6 +52,9 @@ export interface FantasyCharacter {
   race: CharacterRace;
   alignment: Alignment;
   level: number;
+  health: number;
+  mana: number;
+  strength: number;
   hp: number;
   armorClass: number;
   stats: CharacterStats;
