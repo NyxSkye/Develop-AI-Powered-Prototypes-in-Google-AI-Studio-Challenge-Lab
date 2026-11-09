@@ -4,7 +4,7 @@ import { GeneratorControls } from './components/GeneratorControls';
 import { CharacterCard } from './components/CharacterCard';
 import { CharacterRoster } from './components/CharacterRoster';
 import { MyDeck } from './components/MyDeck';
-import { FantasyCharacter, CharacterClassType } from './types/character';
+import { FantasyCharacter, CharacterClassType, CharacterRace } from './types/character';
 import { generateRandomCharacter } from './utils/characterGenerator';
 import { playRollSound, playSaveSound } from './utils/audio';
 
@@ -21,10 +21,11 @@ export default function App() {
 
   // Filter locking state
   const [lockedClass, setLockedClass] = useState<CharacterClassType | null>(null);
+  const [lockedRace, setLockedRace] = useState<CharacterRace | null>(null);
 
   // Active generated character
   const [character, setCharacter] = useState<FantasyCharacter>(() => 
-    generateRandomCharacter({ lockedClass: null })
+    generateRandomCharacter({ lockedClass: null, lockedRace: null })
   );
 
   // Rolling animation state for smooth visual feedback
@@ -56,11 +57,14 @@ export default function App() {
   };
 
   // Instant generation handler
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback((overrideRace?: CharacterRace | null, overrideClass?: CharacterClassType | null) => {
     playRollSound(!soundEnabled);
     setIsRolling(true);
 
-    const newHero = generateRandomCharacter({ lockedClass });
+    const effectiveRace = overrideRace !== undefined ? overrideRace : lockedRace;
+    const effectiveClass = overrideClass !== undefined ? overrideClass : lockedClass;
+
+    const newHero = generateRandomCharacter({ lockedClass: effectiveClass, lockedRace: effectiveRace });
     setCharacter(newHero);
 
     const timer = setTimeout(() => {
@@ -68,7 +72,17 @@ export default function App() {
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [soundEnabled, lockedClass]);
+  }, [soundEnabled, lockedClass, lockedRace]);
+
+  const handleSelectRace = (race: CharacterRace | null) => {
+    setLockedRace(race);
+    handleGenerate(race, lockedClass);
+  };
+
+  const handleSelectClass = (cls: CharacterClassType | null) => {
+    setLockedClass(cls);
+    handleGenerate(lockedRace, cls);
+  };
 
   // Keyboard shortcut listener (Spacebar or 'R' to roll)
   useEffect(() => {
@@ -156,9 +170,11 @@ export default function App() {
         {/* Prominent Generator Button & Controls */}
         <section aria-label="Character Generation Controls" className="w-full">
           <GeneratorControls
-            onGenerate={handleGenerate}
+            onGenerate={() => handleGenerate()}
             lockedClass={lockedClass}
-            onSelectLockedClass={setLockedClass}
+            onSelectLockedClass={handleSelectClass}
+            lockedRace={lockedRace}
+            onSelectLockedRace={handleSelectRace}
             isRolling={isRolling}
           />
         </section>

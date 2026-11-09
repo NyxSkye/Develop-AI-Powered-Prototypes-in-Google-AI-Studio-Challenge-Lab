@@ -85,6 +85,78 @@ Style: Vivid, dramatic, literary dark fantasy prose with rich sensory details. D
   }
 });
 
+function generateProceduralCourseHook(character: any): string {
+  return `⚔️ QUEST HOOK: The Crucible of ${character.originRealm}
+
+📜 THE CALL TO ADVENTURE:
+An emergency dispatch arrives with an alchemical wax seal from ${character.originRealm}. Whispers tell of an ancient cataclysm rekindling within the sunken vaults where ${character.fullName} first claimed their ${character.signatureWeapon}. Dark emissaries seek to reverse their ${character.specialAbility} arcana to break the planar seals protecting the realm.
+
+🗺️ THE 3 COURSE MILESTONES:
+1. Act I (The Wilderness Infiltration): Navigate the perilous outskirts of ${character.originRealm}. Decipher coded alchemical runes left by ancient scholars and rescue a trapped scout who knows the cult's underground lair.
+2. Act II (The Sunken Sanctum Trial): Battle through corrupted elemental sentinels. Solve an ancient prism puzzle utilizing ${character.secondaryItem} to unlock the inner sanctum before necrotic miasma floods the halls.
+3. Act III (The Primeval Confrontation): Engage the Abyssal Crucible Fiend in a climactic duel. ${character.name} must channel their full ${character.class} training to cleanse the heart-stone and seal the rift forever.
+
+🏆 ALCHEMICAL REWARDS & SPOILS:
+750 gold marks, a Pristine Philosopher's Draught (+25 permanent Max Mana/Health), and the eternal allegiance of ${character.originRealm}.`;
+}
+
+// API endpoint to generate rich mini-adventure / course hook using Gemini
+app.post('/api/generate-course-hook', async (req, res) => {
+  try {
+    const { character } = req.body;
+    if (!character) {
+      return res.status(400).json({ error: 'Character data is required' });
+    }
+
+    const prompt = `You are an elite tabletop RPG dungeon master and dark fantasy quest designer.
+Create an exciting, immersive mini-adventure quest hook ("Course Hook") specifically tailored to this character's backstory and traits:
+
+- Character Name: ${character.fullName}
+- Class & Subclass: ${character.class} (${character.subclass})
+- Race/Ancestry: ${character.race}
+- Alignment: ${character.alignment}
+- Realm of Origin: ${character.originRealm}
+- Signature Armament: ${character.signatureWeapon}
+- Secondary Relic: ${character.secondaryItem}
+- Signature Arcana/Feat: ${character.specialAbility}
+- Backstory: ${character.backstory}
+- Stats: Health ${character.health}, Mana ${character.mana}, Strength ${character.strength}, Intelligence ${character.intelligence}, Charisma ${character.charisma}
+
+Structure the mini-adventure with:
+1. ⚔️ Quest Title (Thematic and heroic)
+2. 📜 The Hook & Call to Adventure (Directly referencing their personal backstory, homeland, or past debts)
+3. 🗺️ The 3 Course Milestones:
+   - Milestone 1: The Investigation / Dangerous Journey
+   - Milestone 2: The Crucible Puzzle / Infiltration / Mid-Boss Trial
+   - Milestone 3: The Climactic Confrontation / Moral Choice
+4. 🏆 Spoils & Alchemical Artifact Rewards
+
+Style: High fantasy, immersive, actionable for a tabletop RPG or narrative campaign.`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+      });
+
+      if (response && response.text) {
+        return res.json({ courseHook: response.text });
+      }
+    } catch (genError: any) {
+      console.warn('Gemini API call threw for course hook:', genError?.message);
+    }
+
+    const fallbackCourse = generateProceduralCourseHook(character);
+    return res.json({ courseHook: fallbackCourse });
+  } catch (error: any) {
+    console.error('Server error generating course hook:', error);
+    return res.status(500).json({ 
+      error: error.message || 'Failed to generate course hook' 
+    });
+  }
+});
+
+
 // Mount Vite middleware in development or serve static in production
 if (process.env.NODE_ENV !== 'production') {
   const vite = await createViteServer({

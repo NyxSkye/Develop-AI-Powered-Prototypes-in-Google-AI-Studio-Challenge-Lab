@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { 
   Shield, Sparkles, Zap, Compass, Sun, ShieldAlert, 
   TreePine, Music, Eye, Flame, Heart, Swords, 
-  BookOpen, MapPin, Copy, Check, PlusCircle, CheckCircle2
+  BookOpen, MapPin, Copy, Check, PlusCircle, CheckCircle2,
+  Crown, Brain
 } from 'lucide-react';
 import { FantasyCharacter, CharacterClassType } from '../types/character';
 import { getStatModifier } from '../utils/characterGenerator';
 import { CharacterPortrait } from './CharacterPortrait';
 import { BackstoryGenerator } from './BackstoryGenerator';
+import { CourseHookGenerator } from './CourseHookGenerator';
 
 interface CharacterCardProps {
   character: FantasyCharacter;
@@ -50,12 +52,14 @@ Race: ${character.race}
 Alignment: ${character.alignment}
 Level: ${character.level}
 
--- THREE NUMERIC STATS --
+-- PRIMARY FIVE NUMERIC STATS --
 Health: ${character.health}
 Mana: ${character.mana}
 Strength: ${character.strength}
+Intelligence: ${character.intelligence}
+Charisma: ${character.charisma}
 
--- CORE D20 ATTRIBUTES --
+-- CORE D20 MODIFIERS --
 STR: ${character.stats.strength} (${getStatModifier(character.stats.strength)})
 DEX: ${character.stats.dexterity} (${getStatModifier(character.stats.dexterity)})
 CON: ${character.stats.constitution} (${getStatModifier(character.stats.constitution)})
@@ -78,12 +82,12 @@ ${character.backstory}
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const secondaryStats = [
+  const auxiliaryStats = [
     { label: 'DEX', name: 'Agility', val: character.stats.dexterity },
     { label: 'CON', name: 'Vitality', val: character.stats.constitution },
-    { label: 'INT', name: 'Intellect', val: character.stats.intelligence },
     { label: 'WIS', name: 'Wisdom', val: character.stats.wisdom },
-    { label: 'CHA', name: 'Presence', val: character.stats.charisma },
+    { label: 'AC', name: 'Armor Class', val: character.armorClass },
+    { label: 'PROF', name: 'Proficiency', val: `+${Math.floor((character.level - 1) / 4) + 2}` },
   ];
 
   return (
@@ -125,7 +129,7 @@ ${character.backstory}
             </h1>
           </div>
 
-          {/* New "Save to Deck" button right in the card header for quick action */}
+          {/* "Save to Deck" button right in the card header for quick action */}
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={onSaveToDeck}
@@ -158,68 +162,95 @@ ${character.backstory}
           </div>
         </div>
 
-        {/* 2. THREE NEW RANDOMLY GENERATED NUMERIC STATS: Health, Mana, and Strength */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 p-4 rounded-2xl bg-stone-950/85 border border-amber-900/60 shadow-inner">
+        {/* 2. FIVE PRIMARY NUMERIC STATS: Health, Mana, Strength, Intelligence, and Charisma */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-3.5 rounded-2xl bg-stone-950/85 border border-amber-900/60 shadow-inner">
           {/* Health Stat */}
-          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-rose-900/40 relative overflow-hidden group">
-            <div className="w-11 h-11 rounded-xl bg-rose-950/80 border border-rose-600/50 flex items-center justify-center text-rose-400 shrink-0 shadow-inner">
-              <Heart className="w-6 h-6 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-900/70 border border-rose-900/40 relative overflow-hidden group">
+            <div className="w-9 h-9 rounded-lg bg-rose-950/80 border border-rose-600/50 flex items-center justify-center text-rose-400 shrink-0 shadow-inner">
+              <Heart className="w-5 h-5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-rose-300/90 block">
+              <span className="text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider text-rose-300/90 block">
                 Health
               </span>
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-rose-100 tabular-nums">
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-xl sm:text-2xl font-extrabold text-rose-100 tabular-nums">
                   {character.health}
                 </span>
-                <span className="text-[10px] font-mono text-rose-400/80">HP</span>
+                <span className="text-[9px] font-mono text-rose-400/80">HP</span>
               </div>
-            </div>
-            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-rose-950/40 select-none pointer-events-none">
-              🜂
             </div>
           </div>
 
           {/* Mana Stat */}
-          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-sky-900/40 relative overflow-hidden group">
-            <div className="w-11 h-11 rounded-xl bg-sky-950/80 border border-sky-600/50 flex items-center justify-center text-sky-400 shrink-0 shadow-inner">
-              <Sparkles className="w-6 h-6 text-sky-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-900/70 border border-sky-900/40 relative overflow-hidden group">
+            <div className="w-9 h-9 rounded-lg bg-sky-950/80 border border-sky-600/50 flex items-center justify-center text-sky-400 shrink-0 shadow-inner">
+              <Sparkles className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-sky-300/90 block">
+              <span className="text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider text-sky-300/90 block">
                 Mana
               </span>
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-sky-100 tabular-nums">
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-xl sm:text-2xl font-extrabold text-sky-100 tabular-nums">
                   {character.mana}
                 </span>
-                <span className="text-[10px] font-mono text-sky-400/80">MP</span>
+                <span className="text-[9px] font-mono text-sky-400/80">MP</span>
               </div>
-            </div>
-            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-sky-950/40 select-none pointer-events-none">
-              🜄
             </div>
           </div>
 
           {/* Strength Stat */}
-          <div className="flex items-center gap-3.5 p-3 rounded-xl bg-stone-900/70 border border-amber-900/40 relative overflow-hidden group">
-            <div className="w-11 h-11 rounded-xl bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
-              <Swords className="w-6 h-6 text-amber-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-900/70 border border-amber-900/40 relative overflow-hidden group">
+            <div className="w-9 h-9 rounded-lg bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+              <Swords className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[11px] font-['MedievalSharp'] font-bold uppercase tracking-widest text-amber-300/90 block">
+              <span className="text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider text-amber-300/90 block">
                 Strength
               </span>
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-amber-100 tabular-nums">
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-xl sm:text-2xl font-extrabold text-amber-100 tabular-nums">
                   {character.strength}
                 </span>
-                <span className="text-[10px] font-mono text-amber-400/80">STR</span>
+                <span className="text-[9px] font-mono text-amber-400/80">STR</span>
               </div>
             </div>
-            <div className="absolute right-2 bottom-1 text-[24px] font-serif text-amber-950/40 select-none pointer-events-none">
-              🜚
+          </div>
+
+          {/* Intelligence Stat */}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-900/70 border border-indigo-900/40 relative overflow-hidden group">
+            <div className="w-9 h-9 rounded-lg bg-indigo-950/80 border border-indigo-600/50 flex items-center justify-center text-indigo-400 shrink-0 shadow-inner">
+              <Brain className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider text-indigo-300/90 block">
+                Intellect
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-xl sm:text-2xl font-extrabold text-indigo-100 tabular-nums">
+                  {character.intelligence}
+                </span>
+                <span className="text-[9px] font-mono text-indigo-400/80">INT</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Charisma Stat */}
+          <div className="col-span-2 sm:col-span-1 flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-900/70 border border-purple-900/40 relative overflow-hidden group">
+            <div className="w-9 h-9 rounded-lg bg-purple-950/80 border border-purple-600/50 flex items-center justify-center text-purple-400 shrink-0 shadow-inner">
+              <Crown className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] font-['MedievalSharp'] font-bold uppercase tracking-wider text-purple-300/90 block">
+                Charisma
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono text-xl sm:text-2xl font-extrabold text-purple-100 tabular-nums">
+                  {character.charisma}
+                </span>
+                <span className="text-[9px] font-mono text-purple-400/80">CHA</span>
+              </div>
             </div>
           </div>
         </div>
@@ -282,7 +313,7 @@ ${character.backstory}
 
             {/* Auxiliary Attributes */}
             <div className="grid grid-cols-5 gap-1.5">
-              {secondaryStats.map((st) => (
+              {auxiliaryStats.map((st) => (
                 <div 
                   key={st.label} 
                   className="p-2 rounded-lg bg-stone-950/60 border border-amber-950/80 text-center"
@@ -299,9 +330,10 @@ ${character.backstory}
           </div>
         </div>
 
-        {/* 4. Backstory Section: Fully Contained Inside This Single Card */}
-        <div className="pt-4 border-t border-amber-900/40">
-          <div className="p-4 rounded-xl bg-stone-950/80 border border-amber-900/40 mb-3 shadow-inner">
+        {/* 4. Backstory & Course Hook Section: Fully Contained Inside This Single Card */}
+        <div className="pt-4 border-t border-amber-900/40 space-y-6">
+          {/* Short Inscribed Legend */}
+          <div className="p-4 rounded-xl bg-stone-950/80 border border-amber-900/40 shadow-inner">
             <span className="text-[10px] font-['MedievalSharp'] uppercase tracking-wider text-amber-400 block mb-1">
               Short Inscribed Legend
             </span>
@@ -310,8 +342,14 @@ ${character.backstory}
             </p>
           </div>
 
-          {/* AI Lorekeeper with "Generate Backstory" Button and its output directly beneath */}
+          {/* AI Lorekeeper: "Generate Backstory" Button and its output directly beneath */}
           <BackstoryGenerator
+            character={character}
+            soundEnabled={soundEnabled}
+          />
+
+          {/* AI Mini-Adventure: "Generate course Hook" Button and its output directly beneath */}
+          <CourseHookGenerator
             character={character}
             soundEnabled={soundEnabled}
           />

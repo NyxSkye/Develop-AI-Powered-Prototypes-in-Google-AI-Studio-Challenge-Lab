@@ -11,7 +11,8 @@ import {
   CLASSES,
   ORIGIN_REALMS,
   ALIGNMENTS,
-  BACKSTORY_TEMPLATES
+  BACKSTORY_TEMPLATES,
+  RACE_STAT_INFLUENCES
 } from '../data/fantasyData';
 
 function getRandomElement<T>(array: T[]): T {
@@ -92,15 +93,29 @@ export function generateRandomCharacter(options?: {
   const conMod = Math.floor((stats.constitution - 10) / 2);
   const hp = (classDef.hitDie + conMod) + (level - 1) * (Math.floor(classDef.hitDie / 2) + 1 + conMod);
   const dexMod = Math.floor((stats.dexterity - 10) / 2);
-  const armorClass = classDef.armorClassBase + Math.min(2, Math.max(0, dexMod));
+  const armorClass = 10 + dexMod;
+  const raceInfluence = RACE_STAT_INFLUENCES[selectedRace] || {
+    healthMod: 0,
+    manaMod: 0,
+    strengthMod: 0,
+    intelligenceMod: 0,
+    charismaMod: 0,
+  };
 
-  // Three distinct randomly generated numeric stats: Health, Mana, Strength
-  const health = 80 + Math.floor(Math.random() * 50) + conMod * 5;
+  // Base numeric stats influenced directly by Race and Class
+  const baseHealth = 80 + Math.floor(Math.random() * 40) + conMod * 5;
+  const health = Math.max(50, baseHealth + raceInfluence.healthMod);
+
   const isCaster = ['Mage', 'Warlock', 'Cleric', 'Druid'].includes(selectedClassType);
-  const mana = isCaster 
-    ? 100 + Math.floor(Math.random() * 60)
-    : 40 + Math.floor(Math.random() * 40);
-  const strength = stats.strength; // authentic RPG d20 rolled strength (10 to 18+)
+  const baseMana = isCaster 
+    ? 90 + Math.floor(Math.random() * 50)
+    : 40 + Math.floor(Math.random() * 30);
+  const mana = Math.max(20, baseMana + raceInfluence.manaMod);
+
+  // Strength, Intelligence, and Charisma influenced by race starting bonuses
+  const strength = Math.max(8, stats.strength + raceInfluence.strengthMod);
+  const intelligence = Math.max(8, stats.intelligence + raceInfluence.intelligenceMod);
+  const charisma = Math.max(8, stats.charisma + raceInfluence.charismaMod);
 
   const backstoryTemplate = getRandomElement(BACKSTORY_TEMPLATES);
   const backstory = backstoryTemplate({
@@ -124,6 +139,8 @@ export function generateRandomCharacter(options?: {
     health,
     mana,
     strength,
+    intelligence,
+    charisma,
     hp: Math.max(12, hp),
     armorClass,
     stats,

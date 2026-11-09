@@ -53,6 +53,109 @@ export const FIRST_NAMES: Record<CharacterRace, string[]> = {
   ]
 };
 
+export interface RaceInfluence {
+  name: CharacterRace;
+  lore: string;
+  healthMod: number;
+  manaMod: number;
+  strengthMod: number;
+  intelligenceMod: number;
+  charismaMod: number;
+}
+
+export const RACE_STAT_INFLUENCES: Record<CharacterRace, RaceInfluence> = {
+  'Human': {
+    name: 'Human',
+    lore: 'Versatile and ambitious, adapting to any alchemical crucible.',
+    healthMod: 10,
+    manaMod: 10,
+    strengthMod: 2,
+    intelligenceMod: 2,
+    charismaMod: 2,
+  },
+  'High Elf': {
+    name: 'High Elf',
+    lore: 'Ancient scholars attuned to astral mana and primeval runes.',
+    healthMod: 0,
+    manaMod: 35,
+    strengthMod: -1,
+    intelligenceMod: 4,
+    charismaMod: 2,
+  },
+  'Wood Elf': {
+    name: 'Wood Elf',
+    lore: 'Agile forest sentinels with swift reflexes and wilderness lore.',
+    healthMod: 15,
+    manaMod: 20,
+    strengthMod: 1,
+    intelligenceMod: 1,
+    charismaMod: 1,
+  },
+  'Mountain Dwarf': {
+    name: 'Mountain Dwarf',
+    lore: 'Unbreakable constitution, stalwart physical might, and dense stone bones.',
+    healthMod: 35,
+    manaMod: -10,
+    strengthMod: 4,
+    intelligenceMod: 0,
+    charismaMod: -1,
+  },
+  'Dragonborn': {
+    name: 'Dragonborn',
+    lore: 'Draconic lineage bearing formidable martial fury and regal presence.',
+    healthMod: 25,
+    manaMod: 15,
+    strengthMod: 4,
+    intelligenceMod: 0,
+    charismaMod: 3,
+  },
+  'Tiefling': {
+    name: 'Tiefling',
+    lore: 'Infernal heritage wielding uncanny occult arcana and bewitching charisma.',
+    healthMod: 5,
+    manaMod: 30,
+    strengthMod: 0,
+    intelligenceMod: 3,
+    charismaMod: 4,
+  },
+  'Halfling': {
+    name: 'Halfling',
+    lore: 'Deceptively light of foot, possessing fearless optimism and social wit.',
+    healthMod: 5,
+    manaMod: 15,
+    strengthMod: -2,
+    intelligenceMod: 1,
+    charismaMod: 4,
+  },
+  'Orc': {
+    name: 'Orc',
+    lore: 'Primal berserker physique boasting peerless muscle and ferocious endurance.',
+    healthMod: 45,
+    manaMod: -20,
+    strengthMod: 6,
+    intelligenceMod: -2,
+    charismaMod: 0,
+  },
+  'Aasimar': {
+    name: 'Aasimar',
+    lore: 'Celestial scions touched by divine radiance and authoritative grace.',
+    healthMod: 20,
+    manaMod: 30,
+    strengthMod: 1,
+    intelligenceMod: 2,
+    charismaMod: 5,
+  },
+  'Gnome': {
+    name: 'Gnome',
+    lore: 'Inquisitive alchemical minds harboring brilliant intellect and arcane zest.',
+    healthMod: -5,
+    manaMod: 30,
+    strengthMod: -2,
+    intelligenceMod: 5,
+    charismaMod: 2,
+  },
+};
+
 export const SURNAMES: string[] = [
   'Ironbreaker', 'Shadowveil', 'Stormcaller', 'Starfall', 'Bloodsworn',
   'Frostborne', 'Silverstrand', 'Moonwhisper', 'Fireheart', 'Runechaser',

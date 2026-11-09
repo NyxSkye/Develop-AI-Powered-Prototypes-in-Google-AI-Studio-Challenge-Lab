@@ -96,32 +96,40 @@ export const MyDeck: React.FC<MyDeckProps> = ({
                   </div>
                 </div>
 
-                {/* Clearly displayed numeric stats: Health, Mana, Strength */}
-                <div className="grid grid-cols-3 gap-2 mt-3.5 p-2 rounded-lg bg-stone-950/80 border border-amber-900/40 text-center">
+                {/* Clearly displayed numeric stats: Health, Mana, Strength, Intelligence, Charisma */}
+                <div className="grid grid-cols-5 gap-1 mt-3.5 p-2 rounded-lg bg-stone-950/80 border border-amber-900/40 text-center">
                   <div className="flex flex-col items-center">
-                    <span className="text-[9px] font-serif uppercase tracking-wider text-rose-400 flex items-center gap-0.5">
-                      <Heart className="w-2.5 h-2.5 text-rose-400" /> HP
-                    </span>
+                    <span className="text-[8px] font-serif uppercase text-rose-400">HP</span>
                     <span className="font-mono text-xs font-bold text-rose-200 tabular-nums">
                       {hero.health}
                     </span>
                   </div>
 
-                  <div className="flex flex-col items-center border-x border-amber-950">
-                    <span className="text-[9px] font-serif uppercase tracking-wider text-sky-400 flex items-center gap-0.5">
-                      <Sparkles className="w-2.5 h-2.5 text-sky-400" /> MP
-                    </span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-[8px] font-serif uppercase text-sky-400">MP</span>
                     <span className="font-mono text-xs font-bold text-sky-200 tabular-nums">
                       {hero.mana}
                     </span>
                   </div>
 
                   <div className="flex flex-col items-center">
-                    <span className="text-[9px] font-serif uppercase tracking-wider text-amber-400 flex items-center gap-0.5">
-                      <Swords className="w-2.5 h-2.5 text-amber-400" /> STR
-                    </span>
+                    <span className="text-[8px] font-serif uppercase text-amber-400">STR</span>
                     <span className="font-mono text-xs font-bold text-amber-200 tabular-nums">
                       {hero.strength}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-[8px] font-serif uppercase text-indigo-400">INT</span>
+                    <span className="font-mono text-xs font-bold text-indigo-200 tabular-nums">
+                      {hero.intelligence || hero.stats?.intelligence || 12}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-[8px] font-serif uppercase text-purple-400">CHA</span>
+                    <span className="font-mono text-xs font-bold text-purple-200 tabular-nums">
+                      {hero.charisma || hero.stats?.charisma || 12}
                     </span>
                   </div>
                 </div>

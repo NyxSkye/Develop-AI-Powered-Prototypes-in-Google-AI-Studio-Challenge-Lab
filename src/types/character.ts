@@ -55,6 +55,8 @@ export interface FantasyCharacter {
   health: number;
   mana: number;
   strength: number;
+  intelligence: number;
+  charisma: number;
   hp: number;
   armorClass: number;
   stats: CharacterStats;
