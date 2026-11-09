@@ -8,6 +8,7 @@ import {
 import { FantasyCharacter, CharacterClassType } from '../types/character';
 import { getStatModifier } from '../utils/characterGenerator';
 import { CharacterPortrait } from './CharacterPortrait';
+import { BackstoryGenerator } from './BackstoryGenerator';
 
 interface CharacterCardProps {
   character: FantasyCharacter;
@@ -314,6 +315,14 @@ ${character.backstory}
               </div>
             </div>
           </div>
+        </div>
+
+        {/* AI Lorekeeper Section with "Generate Backstory" Button & Output Component */}
+        <div className="pt-2">
+          <BackstoryGenerator
+            character={character}
+            soundEnabled={soundEnabled}
+          />
         </div>
       </div>
     </article>
