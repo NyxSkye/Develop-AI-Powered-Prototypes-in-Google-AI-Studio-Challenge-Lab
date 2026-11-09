@@ -239,42 +239,42 @@ ${character.backstory}
           {/* Attributes, Armament & Origin Column */}
           <div className="md:col-span-7 lg:col-span-7 space-y-4">
             {/* Origin & Alignment */}
-            <div className="p-3.5 rounded-xl bg-stone-950/70 border border-amber-900/40 flex items-center justify-between text-xs font-serif">
-              <div className="flex items-center gap-1.5 text-amber-300/90">
-                <MapPin className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-amber-500 font-semibold">Origin Realm:</span>
-                <span>{character.originRealm}</span>
+            <div className="p-3.5 rounded-xl bg-stone-950/95 border border-amber-600/60 flex flex-wrap items-center justify-between gap-2.5 text-sm font-serif shadow-sm">
+              <div className="flex items-center gap-2 text-amber-100">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="text-amber-300 font-bold tracking-wide">Origin Realm:</span>
+                <span className="text-amber-50 font-semibold drop-shadow-xs">{character.originRealm}</span>
               </div>
-              <div className="text-amber-400/80 font-mono text-[11px]">
+              <div className="px-3 py-1 rounded-md bg-amber-950/90 border border-amber-500/70 text-amber-200 font-mono text-xs font-bold tracking-wider shadow-xs">
                 {character.alignment}
               </div>
             </div>
 
             {/* Armament & Abilities */}
             <div className="space-y-2 text-xs">
-              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
-                <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
+              <div className="p-3 rounded-xl bg-stone-950/80 border border-amber-800/60 shadow-inner">
+                <span className="text-[11px] uppercase tracking-wider text-amber-300 font-serif font-bold block mb-0.5">
                   Signature Weapon
                 </span>
-                <span className="font-serif font-medium text-amber-100">
+                <span className="font-serif font-semibold text-amber-50 text-sm">
                   {character.signatureWeapon}
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
-                <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
+              <div className="p-3 rounded-xl bg-stone-950/80 border border-amber-800/60 shadow-inner">
+                <span className="text-[11px] uppercase tracking-wider text-amber-300 font-serif font-bold block mb-0.5">
                   Special Arcana / Feat
                 </span>
-                <span className="font-serif font-medium text-amber-300">
+                <span className="font-serif font-semibold text-amber-300 text-sm">
                   {character.specialAbility}
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-stone-950/70 border border-amber-900/40 shadow-inner">
-                <span className="text-[10px] uppercase tracking-wider text-amber-500 font-serif block mb-0.5">
+              <div className="p-3 rounded-xl bg-stone-950/80 border border-amber-800/60 shadow-inner">
+                <span className="text-[11px] uppercase tracking-wider text-amber-300 font-serif font-bold block mb-0.5">
                   Secondary Relic
                 </span>
-                <span className="font-serif text-amber-200/90">
+                <span className="font-serif font-semibold text-amber-100 text-sm">
                   {character.secondaryItem}
                 </span>
               </div>

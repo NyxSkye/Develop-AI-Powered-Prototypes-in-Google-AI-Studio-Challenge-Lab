@@ -39,8 +39,10 @@ export const Header: React.FC<HeaderProps> = ({
         <span aria-hidden="true" className="text-amber-700">·</span>
         <span className="text-amber-500/70">d20 Prime Matrix</span>
         <span aria-hidden="true" className="text-amber-700">·</span>
-        <span className="text-amber-400/90 font-mono text-[11px]">
-          Press <kbd className="px-1.5 py-0.5 rounded bg-stone-900 text-amber-300 border border-amber-800/80">Space</kbd> to brew
+        <span className="text-amber-100 font-serif text-xs font-medium flex items-center gap-1.5 bg-stone-900/90 px-3 py-1 rounded-lg border border-amber-700/60 shadow-sm">
+          <span>Press</span>
+          <kbd className="px-2 py-0.5 rounded bg-amber-950 text-amber-200 border border-amber-500/80 font-mono text-xs font-bold shadow-xs">Space</kbd>
+          <span>to brew</span>
         </span>
       </nav>
 
